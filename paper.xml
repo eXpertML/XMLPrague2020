@@ -23,8 +23,16 @@
 		</keywordset>
 		<abstract>
 			<para>Invisible XML (Pemberton 2013) is a method for taking any structured text which can be parsed using a grammar, and treating it as XML.  It means that the XML technology stack can be leveraged outside of XML structures.</para>
-			<para>To be useful in XSLT transforms, a grammar based parser in XSLT is required.  Parser Generators that provide XSLT parsers are available, but do not create parsers that work in the XSLT programming idiom, and can not parse ambiguous grammars.</para>
-			<para>An interpretation of the Earley (Earley 1970) parsing algorithm may solve both of these problems: an Earley parser can parse any context-independant grammar, including any which may be ambiguous; it has also been suggested that the "Earley items" created as part of a parse operation can be reconfigured into a tree structure (Sperberg-McQueen 2017), which naturally lends itself to processing with XSLT.</para>
+			<para>To be useful in XSLT transforms, a grammar based parser in XSLT is required.
+				Parser-generators that provide XSLT parsers are available, but do not create parsers
+				that work in the XSLT programming idiom, and can not parse ambiguous
+				grammars.</para>
+			<para>An interpretation of the Earley (Earley 1970) parsing algorithm may solve both of these
+				problems: an Earley parser can parse any context-independent grammar, including any
+				which may be ambiguous; it has also been suggested that the "Earley items" created
+				as part of a parse operation can be reconfigured into a tree structure
+				(Sperberg-McQueen 2017), which naturally lends itself to processing with
+				XSLT.</para>
 			<para>This paper attempts to lay the ground-work for producing a parser generator which creates XSLT parsers for given grammars.  We will attempt to use examples from previous papers on the topic to manually create both an XML representation of the grammar, and the desired tree structure of Earley items.  In turn, these should inform what an XSLT parser for that grammar should look like.</para>
 			<para>Finally the paper will discuss how the resulting parser can be abstracted and extended to parse using an arbitrary grammar, use other grammar languages, and create an XSLT parser-generator.</para>
 		</abstract>
