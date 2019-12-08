@@ -61,12 +61,41 @@
 	<appendix>
 		<title>Code Listings</title>
 		<example>
-			<title>Earley Grammar</title>
-			<programlisting></programlisting>
+			<title>Earley Grammar (iXML)</title>
+			<programlisting>program: block.
+block: "{", statements, "}".
+statements: statement, ";", statements; empty.
+statement: if statement; while statement; assignment; call; block.
+if statement: "if", condition, "then", statement, else-option.
+else-option: "else", statement; empty.
+empty: .
+while statement: "while", condition, "do", statement.
+assignment: variable, "=", expression.
+variable: identifier.
+call: identifier, "(", parameters, ")".</programlisting>
 		</example>
 		<example>
 			<title>Desired Output</title>
-			<programlisting/>
+			<programlisting>&lt;program>
+   &lt;block>{
+      &lt;statements>
+         &lt;statement>
+            &lt;assignment>
+               &lt;variable>
+                  &lt;identifier>a&lt;/identifier>
+               &lt;/variable>
+               =
+               &lt;expression>
+                  &lt;number>0&lt;/number>
+               &lt;/expression>
+            &lt;/assignment>
+         &lt;/statement>;
+         &lt;statements>
+            &lt;empty>&lt;/empty>
+         &lt;/statements>
+      &lt;/statements>
+   }&lt;/block>
+&lt;/program></programlisting>
 		</example>
 		<example>
 			<title>Earley Items</title>
