@@ -33,7 +33,7 @@
 				as part of a parse operation can be reconfigured into a tree structure
 				(Sperberg-McQueen 2017), which naturally lends itself to processing with
 				XSLT.</para>
-			<para>This paper attempts to lay the ground-work for producing a parser generator which creates XSLT parsers for given grammars. An example from previous papers on the topic will be used to manually create both an XML representation of the grammar, and the desired tree structure of Earley items. In turn, these should inform what an XSLT parser for that grammar should look like.</para>
+			<para>This paper attempts to lay the ground-work for producing a parser generator which creates XSLT parsers for given grammars. Examples from previous papers on the topic will be used to manually create both an XML representation of the grammar, and the desired tree structure of Earley items. In turn, these should inform what an XSLT parser for that grammar should look like.</para>
 			<para>Finally the paper will discuss how the resulting parser can be abstracted and extended to parse using an arbitrary grammar, use other grammar languages, and create an XSLT parser-generator.</para>
 		</abstract>
 	</info>
@@ -43,8 +43,21 @@
 	</note>
 	<section>
 		<title>Introduction</title>
-		<para><?oxy-placeholder content="Introductory section goes here…"?></para>
-		<para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
+		<section>
+			<title>XSLT parsers: why we should use them</title>
+		</section>
+		<section>
+			<title>LL1 parsers: why we shouldn't use them</title>
+			<para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
+		</section>
+		<section>
+			<title>The declarative idiom: writing extensible parsers</title>
+			<para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
+		</section>
+		<section>
+			<title>The Earley Parser</title>
+			<para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
+		</section>
 	</section>
 	<section>
 		<title>Methodology</title>
@@ -77,7 +90,7 @@
 	<appendix>
 		<title>Code Listings</title>
 		<example>
-			<title>Earley Grammar (iXML)</title>
+			<title>Grammar (iXML)</title>
 			<programlisting>program: block.
 block: "{", statements, "}".
 statements: statement, ";", statements; empty.
@@ -89,6 +102,10 @@ while statement: "while", condition, "do", statement.
 assignment: variable, "=", expression.
 variable: identifier.
 call: identifier, "(", parameters, ")".</programlisting>
+		</example>
+		<example>
+			<title>Grammar (iXML as XML format)</title>
+			<programlisting/>
 		</example>
 		<example>
 			<title>Desired Output</title>
