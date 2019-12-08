@@ -2,7 +2,7 @@
 <?xml-stylesheet type="text/css" href="resources/css/paper.css"?>
 <article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0">
 	<info>
-		<title>A Proof of Concept XSLT Earley Parser</title>
+		<title>XSLT Earley: First Steps to a Declarative Parser Generator</title>
 		<author>
 			<personname>Tomos Hillman</personname>
 			<email>tom@expertml.com</email>
@@ -33,13 +33,29 @@
 				as part of a parse operation can be reconfigured into a tree structure
 				(Sperberg-McQueen 2017), which naturally lends itself to processing with
 				XSLT.</para>
-			<para>This paper attempts to lay the ground-work for producing a parser generator which creates XSLT parsers for given grammars.  We will attempt to use examples from previous papers on the topic to manually create both an XML representation of the grammar, and the desired tree structure of Earley items.  In turn, these should inform what an XSLT parser for that grammar should look like.</para>
+			<para>This paper attempts to lay the ground-work for producing a parser generator which creates XSLT parsers for given grammars. An example from previous papers on the topic will be used to manually create both an XML representation of the grammar, and the desired tree structure of Earley items. In turn, these should inform what an XSLT parser for that grammar should look like.</para>
 			<para>Finally the paper will discuss how the resulting parser can be abstracted and extended to parse using an arbitrary grammar, use other grammar languages, and create an XSLT parser-generator.</para>
 		</abstract>
 	</info>
+	<note>
+		<title>Note for reviewers</title>
+		<para>This paper is a (somewhat last minute) work in progress, and should not be read as complete!</para>
+	</note>
 	<section>
 		<title>Introduction</title>
 		<para><?oxy-placeholder content="Introductory section goes here…"?></para>
+		<para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
+	</section>
+	<section>
+		<title>Methodology</title>
+		<para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
+	</section>
+	<section>
+		<title>Conclusions</title>
+		<para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
+	</section>
+	<section>
+		<title>Future Work</title>
 		<para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
 	</section>
 
