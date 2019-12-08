@@ -2,62 +2,72 @@
 <?xml-stylesheet type="text/css" href="resources/css/paper.css"?>
 <article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0">
 	<info>
-		<title><?oxy-placeholder content="Your paper title"?></title>
+		<title>A Proof of Concept XSLT Earley Parser</title>
 		<author>
-			<personname><?oxy-placeholder content="Your name"?></personname>
-			<email><?oxy-placeholder content="Your email address"?></email>
-			<uri><?oxy-placeholder content="Your website"?></uri>
+			<personname>Tomos Hillman</personname>
+			<email>tom@expertml.com</email>
+			<uri>www.expertml.com</uri>
 			<personblurb>
-				<para><?oxy-placeholder content="Details about you"?></para>
+				<para>Tomos Hillman is the founder and principle of eXpertML Ltd, a consultancy specialising in XML, XSLT, XQuery and related technologies, particularly in the field of digital publishing, quality analysis, and transformation.</para>
+				<para>Tom has given training courses to various institutions including publishers, universities and the UN, as well as being a regular faculty member at the prestigious XML Summer School in Oxford, and one of the founding members of the Markup UK committee.</para>
+				<para>Originally from Wales, he now lives with his family in Yorkshire. Tom doesn't like to conform to stereotypes, but a deep love of Star Wars, table top games, fiction and animation sometimes make this hard.</para>
 			</personblurb>
 			<affiliation>
-				<jobtitle><?oxy-placeholder content="Your job title"?></jobtitle>
-				<orgname><?oxy-placeholder content="Organization name"?></orgname>
+				<orgname>eXpertML Ltd</orgname>
 			</affiliation>
 		</author>
 		<keywordset>
-			<keyword><?oxy-placeholder content="keyword relevant to your paper"?></keyword>
-			<keyword><?oxy-placeholder content="keyword"?></keyword>
+			<keyword>XSLT 3.0</keyword>
+			<keyword>Earley</keyword>
+			<keyword>Invisible XML</keyword>
 		</keywordset>
 		<abstract>
-			<para><?oxy-placeholder content="First paragraph of your abstract."?></para>
-			<para><?oxy-placeholder content="Another paragraph …"?></para>
+			<para>Invisible XML (Pemberton 2013) is a method for taking any structured text which can be parsed using a grammar, and treating it as XML.  It means that the XML technology stack can be leveraged outside of XML structures.</para>
+			<para>To be useful in XSLT transforms, a grammar based parser in XSLT is required.  Parser Generators that provide XSLT parsers are available, but do not create parsers that work in the XSLT programming idiom, and can not parse ambiguous grammars.</para>
+			<para>An interpretation of the Earley (Earley 1970) parsing algorithm may solve both of these problems: an Earley parser can parse any context-independant grammar, including any which may be ambiguous; it has also been suggested that the "Earley items" created as part of a parse operation can be reconfigured into a tree structure (Sperberg-McQueen 2017), which naturally lends itself to processing with XSLT.</para>
+			<para>This paper attempts to lay the ground-work for producing a parser generator which creates XSLT parsers for given grammars.  We will attempt to use examples from previous papers on the topic to manually create both an XML representation of the grammar, and the desired tree structure of Earley items.  In turn, these should inform what an XSLT parser for that grammar should look like.</para>
+			<para>Finally the paper will discuss how the resulting parser can be abstracted and extended to parse using an arbitrary grammar, use other grammar languages, and create an XSLT parser-generator.</para>
 		</abstract>
 	</info>
-
-	<para><?oxy-placeholder content="Leading text before the first section can be here…"?></para>
 	<section>
 		<title>Introduction</title>
 		<para><?oxy-placeholder content="Introductory section goes here…"?></para>
 		<para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
 	</section>
 
-	<section>
-		<title><?oxy-placeholder content="Section title"?></title>
-		<para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
-	</section>
-	
-	<section>
-		<title>Conclusion</title>
-		<para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
-
-	</section>
-
 	<bibliography xml:id="references">
-		<bibliomixed> <abbrev>DB5SPEC</abbrev> <author>
-			<personname><surname>Walsh</surname><firstname>Norman</firstname></personname>
-			</author>: <title>The DocBook Schema</title>. Working Draft 5.0a1, <date>29 June
-			2005</date>, <orgname>OASIS</orgname>. <bibliomisc><link
-			xl:href="http://www.docbook.org/specs/wd-docbook-docbook-5.0a1.html"/></bibliomisc> </bibliomixed>
+
+		<bibliomixed xml:id="Earley1970" xreflabel="Earley 1970">Earley, Jay (1970), <title>An efficient context-free parsing algorithm</title>, Communications of the ACM 13 (2): 94-102, DOI: <biblioid class="doi">10.1145/362007.362035</biblioid>
+		</bibliomixed>
 		
-		<bibliomixed> <abbrev><?oxy-placeholder content="Abreviation for references"?></abbrev> <author>
-			<personname><surname><?oxy-placeholder content="Surname"?></surname>
-				<firstname><?oxy-placeholder content="Firstname"?></firstname></personname>
-			</author>: <title><?oxy-placeholder content="Reference title"?></title>.
-			<date><?oxy-placeholder content="DD Month Year"?></date>,
-			<orgname><?oxy-placeholder content="Organization name"?></orgname>
-			<bibliomisc><link/></bibliomisc></bibliomixed>
+		<bibliomixed xml:id="Pemberton2013" xreflabel="Pemberton 2013">Pemberton, Steven (2013), <title>Invisible XML</title>, Presented at Balisage: The Markup Conference 2013, Montréal, Canada, August 6 - 9, 2013. In <emphasis> Proceedings of Balisage: The Markup Conference 2013. </emphasis> Balisage Series on Markup Technologies, vol. 10 (2013). DOI: <biblioid class="doi">10.4242/BalisageVol10.Pemberton01</biblioid> . </bibliomixed>
+		
+		<bibliomixed xml:id="Pemberton2016" xreflabel="Pemberton 2016">Pemberton, Steven (2016), <title>Parse Earley, Parse Often</title>.  In Proc. XML London 2016, University College London, June 4-5, pp.120-126.  DOI: <biblioid class="doi">10.14337/XMLLondon16.Pemberton01</biblioid></bibliomixed>
+		
+		<bibliomixed xml:id="Kosek2017" xreflabel="Kosek 2017">Kosek, Jirka (2017) <title>Improving validation of structured text</title>. In Proc. XML London 2017, University College London, June 11–12, pp.56–67. DOI: <biblioid class="doi">10.14337/XMLLondon17.Kosek01</biblioid> .</bibliomixed>
+
+	<bibliomixed xml:id="Sperberg-McQueen2017" xreflabel="Sperberg-McQueen 2017">Sperberg-McQueen, C. M (2017). <title>Translating imperative algorithms into declarative, functional terms: towards Earley parsing in XSLT and XQuery.</title> Presented at Balisage: The Markup Conference 2017, Washington, DC, August 1 - 4, 2017. In Proceedings of Balisage: The Markup Conference 2017. Balisage Series on Markup Technologies, vol. 19.  DOI:  <biblioid class="doi">10.4242/BalisageVol19.Sperberg-McQueen01</biblioid>.</bibliomixed>
 		
 	</bibliography>
+	
+	<appendix>
+		<title>Code Listings</title>
+		<example>
+			<title>Earley Grammar</title>
+			<programlisting></programlisting>
+		</example>
+		<example>
+			<title>Desired Output</title>
+			<programlisting/>
+		</example>
+		<example>
+			<title>Earley Items</title>
+			<programlisting/>
+		</example>
+		<example>
+			<title>Earley Tree</title>
+			<programlisting/>
+		</example>
+	</appendix>
 
 </article>
