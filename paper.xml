@@ -22,46 +22,119 @@
 			<keyword>Invisible XML</keyword>
 		</keywordset>
 		<abstract>
-			<para>Invisible XML (Pemberton 2013) is a method for taking any structured text which can be parsed using a grammar, and treating it as XML.  It means that the XML technology stack can be leveraged outside of XML structures.</para>
+			<para>Invisible XML (<citation>Pemberton 2013</citation>) is a method for taking any structured
+        text which can be parsed using a grammar, and treating it as XML. It means that the XML
+        technology stack can be leveraged outside of XML structures.</para>
 			<para>To be useful in XSLT transforms, a grammar based parser in XSLT is required.
 				Parser-generators that provide XSLT parsers are available, but do not create parsers
 				that work in the XSLT programming idiom, and can not parse ambiguous
 				grammars.</para>
-			<para>An interpretation of the Earley (Earley 1970) parsing algorithm may solve both of these
-				problems: an Earley parser can parse any context-independent grammar, including any
-				which may be ambiguous; it has also been suggested that the "Earley items" created
-				as part of a parse operation can be reconfigured into a tree structure
-				(Sperberg-McQueen 2017), which naturally lends itself to processing with
-				XSLT.</para>
+			<para>An interpretation of the Earley (<citation>Earley 1970</citation>) parsing algorithm may
+        solve both of these problems: an Earley parser can parse any context-independent grammar,
+        including any which may be ambiguous; it has also been suggested that the "Earley items"
+        created as part of a parse operation can be reconfigured into a tree structure
+          (<citation>Sperberg-McQueen 2017</citation>), which naturally lends itself to processing
+        with XSLT.</para>
 			<para>This paper attempts to lay the ground-work for producing a parser generator which creates XSLT parsers for given grammars. Examples from previous papers on the topic will be used to manually create both an XML representation of the grammar, and the desired tree structure of Earley items. In turn, these should inform what an XSLT parser for that grammar should look like.</para>
 			<para>Finally the paper will discuss how the resulting parser can be abstracted and extended to parse using an arbitrary grammar, use other grammar languages, and create an XSLT parser-generator.</para>
 		</abstract>
 	</info>
 	<note>
 		<title>Note for reviewers</title>
-		<para>This paper is a (somewhat last minute) work in progress, and should not be read as complete!</para>
+		<para>This paper is a (somewhat last minute) work in progress, and may be read as an extended
+      abstract, rather than an incomplete paper (although the latter description is certainly
+      accurate)!</para>
 	</note>
 	<section>
-		<title>Introduction</title>
-		<section>
-			<title>XSLT parsers: why we should use them</title>
-		</section>
-		<section>
-			<title>LL1 parsers: why we shouldn't use them</title>
-			<para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
-		</section>
-		<section>
-			<title>The declarative idiom: writing extensible parsers</title>
-			<para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
-		</section>
-		<section>
-			<title>The Earley Parser</title>
-			<para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
-		</section>
-	</section>
+    <title>Introduction</title>
+    <para>This paper is a continuation of the works in papers on invisible XML and the Earley
+      parser, particularly <citation>Pemberton 2016</citation> and <citation>Sperberg-McQueen
+        2017</citation>. It attempts to demonstrate an implementation of the Earley alogorithm
+        (<citation>Earley 1970</citation>) - or something very close to it - using the declarative
+      programming idiom of XSLT rather than its traditional, procedural form.</para>
+    <para> The proof of concept that the paper aims to introduce is limited to a single pre-defined
+      grammar; however it is hoped that this will form a groundwork for producing parsers and parser
+      generators which can not only use any grammar, but grammars formed using a range of grammar
+      languages, such as BNF and EBNF.</para>
+    <section>
+      <title>Invisible XML</title>
+      <para>Invisible XML was introduced by Steven Pemberton in his 2013 paper at the Balisage
+        conference (<citation>Pemberton 2013</citation>), and specified online (<citation>ixml
+          specification</citation>).</para>
+      <para>It states that since all data is an abstraction, content can be equivalently expressed
+        in a number of ways, including using XML.  A simple piece of pseudocode
+        like:<programlisting>{a=0}</programlisting></para>
+      <para>Can be expressed without losing pertinent information in an XML format such as:</para>
+      <para>
+        <programlistingco>
+          <areaspec/>
+        </programlistingco>
+      </para>
+      <programlisting>&lt;program>
+   &lt;block>{
+      &lt;statements>
+         &lt;statement>
+            &lt;assignment>
+               &lt;variable>
+                  &lt;identifier>a&lt;/identifier>
+               &lt;/variable>
+               =
+               &lt;expression>
+                  &lt;number>0&lt;/number>
+               &lt;/expression>
+            &lt;/assignment>
+         &lt;/statement>;
+         &lt;statements>
+            &lt;empty>&lt;/empty>
+         &lt;/statements>
+      &lt;/statements>
+   }&lt;/block>
+&lt;/program></programlisting>
+      <para>This is the example we will use to create our parser; it is taken from the slides of
+          <citation>Pemberton 2016</citation></para>
+      <para>Invisible XML also describes annotations to reduce the elements created in the parse
+        tree that do not add meaning to the content but are an accident of the grammar formulation
+        (such as the empty <code>statements</code> element).  Recreating these is not a primary goal
+        of this paper, but should not present great technical difficulty.</para>
+    </section>
+    <section>
+      <title>XSLT parsers: why we should use them</title>
+      <para>There are a number of features of Invisible XML which offer opportunities; in
+        particular, the XML technology stack can be used to   </para>
+    </section>
+    <section>
+      <title>LL1 parsers: why we shouldn't use them</title>
+      <para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
+    </section>
+    <section>
+      <title>The declarative idiom: writing extensible parsers</title>
+      <para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
+    </section>
+    <section>
+      <title>The Earley Parser</title>
+      <para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
+    </section>
+  </section>
 	<section>
 		<title>Methodology</title>
 		<para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
+    <section>
+      <title>Define a Grammar represented in XML</title>
+      <para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
+    </section>
+    <section>
+      <title>Define the desired parsed output</title>
+    </section>
+    <section>
+      <title>Determine the Earley objects</title>
+    </section>
+    <section>
+      <title>Determine the Earley Tree</title>
+      <para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
+    </section>
+    <section>
+      <title>The XSLT algorithm</title>
+    </section>
 	</section>
 	<section>
 		<title>Conclusions</title>
@@ -84,6 +157,7 @@
 		<bibliomixed xml:id="Kosek2017" xreflabel="Kosek 2017">Kosek, Jirka (2017) <title>Improving validation of structured text</title>. In Proc. XML London 2017, University College London, June 11–12, pp.56–67. DOI: <biblioid class="doi">10.14337/XMLLondon17.Kosek01</biblioid> .</bibliomixed>
 
 	<bibliomixed xml:id="Sperberg-McQueen2017" xreflabel="Sperberg-McQueen 2017">Sperberg-McQueen, C. M (2017). <title>Translating imperative algorithms into declarative, functional terms: towards Earley parsing in XSLT and XQuery.</title> Presented at Balisage: The Markup Conference 2017, Washington, DC, August 1 - 4, 2017. In Proceedings of Balisage: The Markup Conference 2017. Balisage Series on Markup Technologies, vol. 19.  DOI:  <biblioid class="doi">10.4242/BalisageVol19.Sperberg-McQueen01</biblioid>.</bibliomixed>
+    <bibliomixed>ixml specification</bibliomixed>
 		
 	</bibliography>
 	
