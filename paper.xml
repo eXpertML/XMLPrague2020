@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet type="text/css" href="resources/css/paper.css"?>
-<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0">
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0">
 	<info>
 		<title>XSLT Earley: First Steps to a Declarative Parser Generator</title>
 		<author>
@@ -22,18 +22,18 @@
 			<keyword>Invisible XML</keyword>
 		</keywordset>
 		<abstract>
-			<para>Invisible XML (<citation>Pemberton 2013</citation>) is a method for taking any structured
+			<para>Invisible XML <citation><xref linkend="Pemberton2013"/></citation> is a method for taking any structured
         text which can be parsed using a grammar, and treating it as XML. It means that the XML
         technology stack can be leveraged outside of XML structures.</para>
 			<para>To be useful in XSLT transforms, a grammar based parser in XSLT is required.
 				Parser-generators that provide XSLT parsers are available, but do not create parsers
 				that work in the XSLT programming idiom, and can not parse ambiguous
 				grammars.</para>
-			<para>An interpretation of the Earley (<citation>Earley 1970</citation>) parsing algorithm may
+			<para>An interpretation of the Earley (<citation><xref linkend="Earley1970"/></citation>) parsing algorithm may
         solve both of these problems: an Earley parser can parse any context-independent grammar,
         including any which may be ambiguous; it has also been suggested that the "Earley items"
         created as part of a parse operation can be reconfigured into a tree structure
-          (<citation>Sperberg-McQueen 2017</citation>), which naturally lends itself to processing
+          (<citation><xref linkend="Sperberg-McQueen2017"/></citation>), which naturally lends itself to processing
         with XSLT.</para>
 			<para>This paper attempts to lay the ground-work for producing a parser generator which creates XSLT parsers for given grammars. Examples from previous papers on the topic will be used to manually create both an XML representation of the grammar, and the desired tree structure of Earley items. In turn, these should inform what an XSLT parser for that grammar should look like.</para>
 			<para>Finally the paper will discuss how the resulting parser can be abstracted and extended to parse using an arbitrary grammar, use other grammar languages, and create an XSLT parser-generator.</para>
@@ -48,9 +48,8 @@
 	<section>
     <title>Introduction</title>
     <para>This paper is a continuation of the works in papers on invisible XML and the Earley
-      parser, particularly <citation>Pemberton 2016</citation> and <citation>Sperberg-McQueen
-        2017</citation>. It attempts to demonstrate an implementation of the Earley alogorithm
-        (<citation>Earley 1970</citation>) - or something very close to it - using the declarative
+      parser, particularly <citation><xref linkend="Pemberton2016"/></citation> and <citation><xref linkend="Sperberg-McQueen2017"/></citation>. It attempts to demonstrate an implementation of the Earley alogorithm
+        (<citation><xref linkend="Earley1970"/></citation>) - or something very close to it - using the declarative
       programming idiom of XSLT rather than its traditional, procedural form.</para>
     <para> The proof of concept that the paper aims to introduce is limited to a single pre-defined
       grammar; however it is hoped that this will form a groundwork for producing parsers and parser
@@ -59,18 +58,15 @@
     <section>
       <title>Invisible XML</title>
       <para>Invisible XML was introduced by Steven Pemberton in his 2013 paper at the Balisage
-        conference (<citation>Pemberton 2013</citation>), and specified online (<citation>ixml
-          specification</citation>).</para>
-      <para>It states that since all data is an abstraction, content can be equivalently expressed
-        in a number of ways, including using XML.  A simple piece of pseudocode
-        like:<programlisting>{a=0}</programlisting></para>
-      <para>Can be expressed without losing pertinent information in an XML format such as:</para>
-      <para>
-        <programlistingco>
-          <areaspec/>
-        </programlistingco>
-      </para>
-      <programlisting>&lt;program>
+        conference (<citation><xref linkend="Pemberton2013"/></citation>), and specified online (<citation><xref linkend="ixmlSpec"/></citation>).</para>
+      <para>It states that since all data is an abstraction, content can be equivalently expressed in a number of ways, including using XML. A simple piece of pseudocode like:
+      	<example xml:id="input">
+					<title>Proposed input</title>
+					<programlisting>{a=0}</programlisting>
+				</example> can be expressed without losing pertinent information in an XML format such as:</para>
+			<example>
+				<title>Expected Output</title>
+				<programlisting language="xml">&lt;program>
    &lt;block>{
       &lt;statements>
          &lt;statement>
@@ -90,8 +86,9 @@
       &lt;/statements>
    }&lt;/block>
 &lt;/program></programlisting>
+			</example>
       <para>This is the example we will use to create our parser; it is taken from the slides of
-          <citation>Pemberton 2016</citation></para>
+          <citation><xref linkend="Pemberton2016"/></citation></para>
       <para>Invisible XML also describes annotations to reduce the elements created in the parse
         tree that do not add meaning to the content but are an accident of the grammar formulation
         (such as the empty <code>statements</code> element).  Recreating these is not a primary goal
@@ -99,12 +96,39 @@
     </section>
     <section>
       <title>XSLT parsers: why we should use them</title>
-      <para>There are a number of features of Invisible XML which offer opportunities; in
-        particular, the XML technology stack can be used to   </para>
+      <para>There are a number of features of Invisible XML which offer opportunities to process any data expressed in structured text.  These can include documents (like Relax NG Compact, DTDs, XQuery, CSS, MarkDown, YAML, JSON, CSV, etc), or formats embedded in XML (like path definitions in SVG, XSLT match patterns, or XPath statements).</para>
+			<para>Expressing these data in an XML format allows us to use the XML technology stack to process them using tools like XQuery, XSLT, Schematron, and XSpec; for many who already have existing XML resources and expertise, this not only allows for reuse of systems and employee proficiencies, but also works within the declarative idiom.</para>
+			<para>A useful example would be in rules based validation; <citation><xref linkend="Kosek2017"/></citation> gives the example of validating SVG paths, which use structured text within  an attribute:</para>
+			<example>
+				<title>An SVG Path <citation><xref linkend="Kosek2017"/></citation></title>
+				<programlisting language="xml">&lt;path d="M100,200 C100,100 250,100 250,200 S400,300 400,200"/></programlisting>
+			</example>
+			<para>Usually, checking the content of such an attribute value would be achieved by regular expression matching and checking: often this is the quickest and simplest solution, and may be the best solution for simple structured text examples; sometimes, however, even quite straightforward structured text grammars can require quite complicated and opaque regular expressions, leading to complex, verbose code which is hard to read and maintain.</para>
+			<para>An Invisible XML approach not only provides validation through successful parsing of the structured text, but also allows validation of specific data and relationships within and between both XML and non-XML structured text. Kosek was able to demonstrate the ability to extend Schematron by including a parser based on the grammar of these paths as an XSLT inclusion, checking both validity via parseability:<example>
+					<title>Schematron rule testing SVG Path validity <citation><xref linkend="Kosek2017"/></citation></title>
+					<programlisting>&lt;sch:rule context="svg:path">
+  &lt;sch:report test="p:parse-svg_path(@d)/
+                    self::ERROR">
+    &lt;sch:value-of select="p:parse-svg_path(@d)"/>
+  &lt;/sch:report>
+&lt;/sch:rule></programlisting>
+				</example>as well as more specific rule constraints, such as ensuring paths are contained within a defined coordinate space:<example>
+					<title>Schematron rule testing path coordinate ranges (<citation><xref linkend="Kosek2017"/></citation>) </title>
+					<programlisting>&lt;sch:rule context="svg:path">
+  &lt;sch:let name="path"
+           value="p:parse-svg_path(@d)"/>
+  &lt;sch:assert
+    test="every $c in $path//(signed-coordinate |
+                      unsigned-coordinate)/number
+          satisfies abs(number) le 1000">
+  &lt;/sch:assert>
+&lt;/sch:rule></programlisting>
+				</example></para>
+			<para>Having the parser available as XSLT therefore empowers developers who use any of the tools in the XSLT toolchain.</para>
     </section>
     <section>
       <title>LL1 parsers: why we shouldn't use them</title>
-      <para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
+      <para>There is a limited availability of XSLT parsers; at the time of writing, there is one parser generator which can produce an XSLT parser from EBNF grammars <citation><xref linkend="REx"/></citation></para>
     </section>
     <section>
       <title>The declarative idiom: writing extensible parsers</title>
@@ -157,13 +181,14 @@
 		<bibliomixed xml:id="Kosek2017" xreflabel="Kosek 2017">Kosek, Jirka (2017) <title>Improving validation of structured text</title>. In Proc. XML London 2017, University College London, June 11–12, pp.56–67. DOI: <biblioid class="doi">10.14337/XMLLondon17.Kosek01</biblioid> .</bibliomixed>
 
 	<bibliomixed xml:id="Sperberg-McQueen2017" xreflabel="Sperberg-McQueen 2017">Sperberg-McQueen, C. M (2017). <title>Translating imperative algorithms into declarative, functional terms: towards Earley parsing in XSLT and XQuery.</title> Presented at Balisage: The Markup Conference 2017, Washington, DC, August 1 - 4, 2017. In Proceedings of Balisage: The Markup Conference 2017. Balisage Series on Markup Technologies, vol. 19.  DOI:  <biblioid class="doi">10.4242/BalisageVol19.Sperberg-McQueen01</biblioid>.</bibliomixed>
-    <bibliomixed>ixml specification</bibliomixed>
+    <bibliomixed xml:id="ixmlSpec" xreflabel="Invisible XML Specification">ixml specification</bibliomixed>
+		<bibliomixed xml:id="REx" xreflabel="REx Parser Generator">REx Parser Generator https://www.bottlecaps.de/rex/</bibliomixed>
 		
 	</bibliography>
 	
 	<appendix>
 		<title>Code Listings</title>
-		<example>
+		<example xml:id="grammar">
 			<title>Grammar (iXML)</title>
 			<programlisting>program: block.
 block: "{", statements, "}".
@@ -177,7 +202,7 @@ assignment: variable, "=", expression.
 variable: identifier.
 call: identifier, "(", parameters, ")".</programlisting>
 		</example>
-		<example>
+		<example xml:id="xmlgrammar">
 			<title>Grammar (iXML as XML format)</title>
 			<programlisting>&lt;ixml>
   &lt;rule name="program">: 
@@ -270,7 +295,7 @@ call: identifier, "(", parameters, ")".</programlisting>
   &lt;/rule>
 &lt;/ixml></programlisting>
 		</example>
-		<example>
+		<example xml:id="output">
 			<title>Desired Output</title>
 			<programlisting>&lt;program>
    &lt;block>{
@@ -293,11 +318,11 @@ call: identifier, "(", parameters, ")".</programlisting>
    }&lt;/block>
 &lt;/program></programlisting>
 		</example>
-		<example>
+		<example xml:id="earleyItems">
 			<title>Earley Items</title>
 			<programlisting/>
 		</example>
-		<example>
+		<example xml:id="earleyTrees">
 			<title>Earley Tree</title>
 			<programlisting/>
 		</example>
