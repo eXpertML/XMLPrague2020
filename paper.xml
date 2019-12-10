@@ -29,12 +29,7 @@
 				Parser-generators that provide XSLT parsers are available, but do not create parsers
 				that work in the XSLT programming idiom, and can not parse ambiguous
 				grammars.</para>
-			<para>An interpretation of the Earley (<citation><xref linkend="Earley1970"/></citation>) parsing algorithm may
-        solve both of these problems: an Earley parser can parse any context-independent grammar,
-        including any which may be ambiguous; it has also been suggested that the "Earley items"
-        created as part of a parse operation can be reconfigured into a tree structure
-          (<citation><xref linkend="Sperberg-McQueen2017"/></citation>), which naturally lends itself to processing
-        with XSLT.</para>
+			<para>An interpretation of the Earley <citation><xref linkend="Earley1970"/></citation> parsing algorithm may solve both of these problems: an Earley parser can parse any context-independent grammar, including any which may be ambiguous; it has also been suggested that the "Earley items" created as part of a parse operation can be reconfigured into a tree structure <citation><xref linkend="Sperberg-McQueen2017"/></citation>, which naturally lends itself to processing with XSLT.</para>
 			<para>This paper attempts to lay the ground-work for producing a parser generator which creates XSLT parsers for given grammars. Examples from previous papers on the topic will be used to manually create both an XML representation of the grammar, and the desired tree structure of Earley items. In turn, these should inform what an XSLT parser for that grammar should look like.</para>
 			<para>Finally the paper will discuss how the resulting parser can be abstracted and extended to parse using an arbitrary grammar, use other grammar languages, and create an XSLT parser-generator.</para>
 		</abstract>
@@ -44,6 +39,7 @@
 		<para>This paper is a (somewhat last minute) work in progress, and may be read as an extended
       abstract, rather than an incomplete paper (although the latter description is certainly
       accurate)!</para>
+		<para>Where time has not allowed, or where work still has to be carried out, I have attempted to include headings to give a rough guide to reviewers on where I hope to go with the paper.</para>
 	</note>
 	<section>
     <title>Introduction</title>
@@ -113,7 +109,7 @@
   &lt;/sch:report>
 &lt;/sch:rule></programlisting>
 				</example>as well as more specific rule constraints, such as ensuring paths are contained within a defined coordinate space:<example>
-					<title>Schematron rule testing path coordinate ranges (<citation><xref linkend="Kosek2017"/></citation>) </title>
+					<title>Schematron rule testing path coordinate ranges <citation><xref linkend="Kosek2017"/></citation></title>
 					<programlisting>&lt;sch:rule context="svg:path">
   &lt;sch:let name="path"
            value="p:parse-svg_path(@d)"/>
@@ -127,24 +123,41 @@
 			<para>Having the parser available as XSLT therefore empowers developers who use any of the tools in the XSLT toolchain.</para>
     </section>
     <section>
-      <title>LL1 parsers: why we shouldn't use them</title>
-      <para>There is a limited availability of XSLT parsers; at the time of writing, there is one parser generator which can produce an XSLT parser from EBNF grammars <citation><xref linkend="REx"/></citation></para>
+      <title>LL1 parsers: why we can't always use them</title>
+      <para>There is a limited availability of XSLT parsers; at the time of writing, there is one well known parser generator which can produce an XSLT parser from EBNF grammars:  <citation><xref linkend="REx"/></citation>.</para>
+			<para>Whilst this freely available tool has been invaluable in enabling approaches like the one above, it has a few limitations.  One of these is that the parsers produced by <xref linkend="REx"/> are LL1 or similar based parsers, and can not parse all possible <emphasis>context free grammars</emphasis>.  In particular, they cannot parse <emphasis>ambiguous</emphasis> grammars; those which potentially allow for multiple valid parsed results, or multiple parsing routes resulting in the same results.</para>
+			<para>The example  <xref linkend="grammar"/> chosen for this proof of concept was chosen precisely because the grammar chosen will not work with LL parsers <citation><xref linkend="Pemberton2016"/></citation>: the first available symbols in <code>assignment</code> and <code>block</code> are both <code>identifier</code>, and therefore the grammar is ambiguous.  It is perfectly possible in this case to rewrite the grammar so that it is not ambiguous through some clever abstractions, but this means that:<itemizedlist>
+					<listitem>
+						<para>using grammars may not be possible without careful editing</para>
+					</listitem>
+					<listitem>
+						<para>editing of the grammars may not be obvious, straightforward, or result in a concise representation of the underlying concepts</para>
+					</listitem>
+					<listitem>
+						<para>some grammars may not be used at all.</para>
+					</listitem>
+				</itemizedlist></para>
     </section>
     <section>
       <title>The declarative idiom: writing extensible parsers</title>
-      <para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
+      <para>There is another limitation to using the <xref linkend="REx"/>: the parser that it produces is not only an LL1 parser, but it is a parser that is written in a functional, procedural paradigm, rather than the declarative idiom favoured by XSLT.</para>
+			<para>The XSLT idiom involves match templates, "apply template" operations and native sequences.  The procedural approach of LL1 parsers involves  passing state objects between functions.  As well as being hard to understand, the latter approach is almost impossible to extend using XSLT's native import and precedence features.</para>
+			<para>Consider a proposed XSLT parser for DTD documents.  It is relatively simple to find an EBNF grammar for the DTD syntax and apply it to a document, but this is unlikely to produce a complete parsed DTD: there is no way for EBNF to convey the meaning of entities and their expansions, and so entities will be treated as just another structure in the parse tree, without parsing any of the data which they represent.  Expanding and including the entities would involve recursive operations on the results of each parse.</para>
+			<para>Better approaches may involve parsing the entities as they are defined, and including the results in the resulting parse tree; doing so would mean extending the generated parser with some bespoke code.  One of the goals of this paper is to establish whether (or not!) it is possible to write a generated parser that would allow extension using the well established XSLT methods of doing so: over-riding templates in including stylesheets, priorities, and use of instructions like <code>xsl:next-match</code> or <code>xsl:apply-imports</code>.</para>
     </section>
     <section>
       <title>The Earley Parser</title>
-      <para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
+			<note>
+				<title>Notes for reviewers</title>
+				<para>This section will include a high level overview of the Earley Parser, including a demonstration of how Earley Items are calculated.</para>
+				<para>It will also review the Earley Tree idea introduced by M Sperberg-McQueen, and can compare nodes in the tree with the associated Earley Items.</para>
+			</note>
     </section>
   </section>
 	<section>
 		<title>Methodology</title>
-		<para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
     <section>
       <title>Define a Grammar represented in XML</title>
-      <para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
     </section>
     <section>
       <title>Define the desired parsed output</title>
@@ -154,7 +167,6 @@
     </section>
     <section>
       <title>Determine the Earley Tree</title>
-      <para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
     </section>
     <section>
       <title>The XSLT algorithm</title>
@@ -162,11 +174,9 @@
 	</section>
 	<section>
 		<title>Conclusions</title>
-		<para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
 	</section>
 	<section>
 		<title>Future Work</title>
-		<para><?oxy-placeholder content="You can use not only paragraphs, but also programlistings, examples, lists, tables, etc."?></para>
 	</section>
 
 	<bibliography xml:id="references">
@@ -189,7 +199,7 @@
 	<appendix>
 		<title>Code Listings</title>
 		<example xml:id="grammar">
-			<title>Grammar (iXML)</title>
+			<title>Invisible XML Grammar</title>
 			<programlisting>program: block.
 block: "{", statements, "}".
 statements: statement, ";", statements; empty.
