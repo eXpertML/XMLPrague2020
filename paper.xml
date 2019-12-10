@@ -105,7 +105,96 @@ call: identifier, "(", parameters, ")".</programlisting>
 		</example>
 		<example>
 			<title>Grammar (iXML as XML format)</title>
-			<programlisting/>
+			<programlisting>&lt;ixml>
+  &lt;rule name="program">: 
+    &lt;alt>
+      &lt;nonterminal name="block"/>
+    &lt;/alt>.
+  &lt;/rule>
+  &lt;rule name="block">:
+    &lt;alt>
+      &lt;literal dstring="{"/>,
+      &lt;nonterminal name="statements"/>,
+      &lt;literal dstring="}"/>
+    &lt;/alt>.
+  &lt;/rule>
+  &lt;rule name="statements">:
+    &lt;alt>
+      &lt;nonterminal name="statement"/>,
+      &lt;literal dstring=";"/>,
+      &lt;nonterminal name="statements"/>
+    &lt;/alt>;
+    &lt;alt>
+      &lt;nonterminal name="empty"/>
+    &lt;/alt>.
+  &lt;/rule>
+  &lt;rule name="statement">:
+    &lt;alt>
+      &lt;nonterminal name="if statement"/>
+    &lt;/alt>;
+    &lt;alt>
+      &lt;nonterminal name="while statement"/>
+    &lt;/alt>;
+    &lt;alt>
+      &lt;nonterminal name="assignment"/>
+    &lt;/alt>;
+    &lt;alt>
+      &lt;nonterminal name="call"/>
+    &lt;/alt>;
+    &lt;alt>
+      &lt;nonterminal name="block"/>
+    &lt;/alt>.
+  &lt;/rule>
+  &lt;rule name="if statement">:
+    &lt;alt>
+      &lt;literal dstring="if"/>,
+      &lt;nonterminal name="condition"/>,
+      &lt;literal dstring="then"/>,
+      &lt;nonterminal name="statement"/>,
+      &lt;nonterminal name="else-option"/>
+    &lt;/alt>.
+  &lt;/rule>
+  &lt;rule name="else-option">:
+    &lt;alt>
+      &lt;literal dstring="else"/>,
+      &lt;nonterminal name="statement"/>
+    &lt;/alt>;
+    &lt;alt>
+      &lt;nonterminal name="empty"/>
+    &lt;/alt>.
+  &lt;/rule>
+  &lt;rule name="empty">:
+    &lt;alt/>.
+  &lt;/rule>
+  &lt;rule name="while statement">:
+    &lt;alt>
+      &lt;literal dstring="while"/>,
+      &lt;nonterminal name="condition"/>,
+      &lt;literal dstring="do"/>,
+      &lt;nonterminal name="statement"/>
+    &lt;/alt>.
+  &lt;/rule>
+  &lt;rule name="assignment">:
+    &lt;alt>
+      &lt;nonterminal name="variable"/>,
+      &lt;literal dstring="="/>,
+      &lt;nonterminal name="expression"/>
+    &lt;/alt>.
+  &lt;/rule>
+  &lt;rule name="variable">:
+    &lt;alt>
+      &lt;nonterminal name="identifier"/>
+    &lt;/alt>.
+  &lt;/rule>
+  &lt;rule name="call">:
+    &lt;alt>
+      &lt;nonterminal name="identifier"/>,
+      &lt;literal dstring="("/>,
+      &lt;nonterminal name="parameters"/>,
+      &lt;literal dstring=")"/>
+    &lt;/alt>.
+  &lt;/rule>
+&lt;/ixml></programlisting>
 		</example>
 		<example>
 			<title>Desired Output</title>
