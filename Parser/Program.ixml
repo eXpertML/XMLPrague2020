@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ixml>
+  <rule name="program">:
+    <alt>
+      <nonterminal name="block"/>
+    </alt>.
+  </rule>
+  <rule name="block">: 
+    <alt>
+      <literal dstring="{"/>,
+      <nonterminal name="statements"/>,
+      <literal dstring="}"/>
+    </alt>.
+  </rule>
+  <rule name="statements">:
+    <alt>
+      <nonterminal name="statement"/>,
+      <literal dstring=";"/>,
+      <nonterminal name="statements"/>
+    </alt>;
+    <alt>
+      <nonterminal name="empty"/>
+    </alt>.
+  </rule>
+  <rule name="statement">:
+    <alt>
+      <nonterminal name="if statement"/>
+    </alt>;
+    <alt>
+      <nonterminal name="while statement"/>
+    </alt>;
+    <alt>
+      <nonterminal name="assignment"/>
+    </alt>;
+    <alt>
+      <nonterminal name="call"/>
+    </alt>;
+    <alt>
+      <nonterminal name="block"/>
+    </alt>.
+  </rule>
+  <rule name="if statement">:
+    <alt>
+      <literal dstring="if"/>,
+      <nonterminal name="condition"/>,
+      <literal dstring="then"/>,
+      <nonterminal name="statement"/>,
+      <nonterminal name="else-option"/>
+    </alt>.
+  </rule>
+  <rule name="else-option">:
+    <alt>
+      <literal dstring="else"/>,
+      <nonterminal name="statement"/>
+    </alt>;
+    <alt>
+      <nonterminal name="empty"/>
+    </alt>.
+  </rule>
+  <rule name="empty">:
+    <alt/>.
+  </rule>
+  <rule name="while statement">:
+    <alt>
+      <literal dstring="while"/>,
+      <nonterminal name="condition"/>,
+      <literal dstring="do"/>,
+      <nonterminal name="statement"/>
+    </alt>.
+  </rule>
+  <rule name="assignment">:
+    <alt>
+      <nonterminal name="variable"/>,
+      <literal dstring="="/>,
+      <nonterminal name="expression"/>
+    </alt>.
+  </rule>
+  <rule name="variable">:
+    <alt>
+      <nonterminal name="identifier"/>
+    </alt>.
+  </rule>
+  <rule name="call">:
+    <alt>
+      <nonterminal name="identifier"/>,
+      <literal dstring="("/>,
+      <nonterminal name="parameters"/>,
+      <literal dstring=")"/>
+    </alt>.
+  </rule>
+</ixml>
