@@ -328,204 +328,352 @@ call: identifier, "(", parameters, ")".</programlisting>
    }&lt;/block>
 &lt;/program></programlisting>
 		</example>
-    <table xml:id="earleyItems" frame="all" rowsep="1">
-      <title>Earley Items for <code>{a=0}</code></title>
-      <tgroup cols="6">
-        <colspec colname="itemNumber" colnum="1" colwidth="0.25*"/>
-        <colspec colname="symbol" colnum="2" colwidth="1*"/>
-        <colspec colname="lhs" colnum="3" colwidth="1*" align="char" char="→"/>
-        <colspec colname="rhs" colnum="4" colwidth="2*" align="char" char="◆"/>
-        <colspec colname="pos" colnum="5" colwidth="0.25*"/>
-        <colspec colname="notes" colnum="6" colwidth="3.5*"/>
-        <thead>
-          <row>
-            <entry>#</entry>
-            <entry>Symbol</entry>
-            <entry>LHS</entry>
-            <entry>RHS</entry>
-            <entry>Position</entry>
-            <entry>Notes</entry>
-          </row>
-        </thead>
-        <tbody>
-          <row>
-            <entry namest="itemNumber" nameend="notes">S(0)</entry>
-          </row>
-          <row>
-            <entry>1</entry>
-            <entry><code>program</code></entry>
-            <entry><code>→ </code></entry>
-            <entry><code>◆ <emphasis>block</emphasis></code></entry>
-            <entry>0</entry>
-            <entry>Because the rule specifies a nonterminal, we have to 'predict' the next rule (2) for block</entry>
-          </row>
-          <row>
-            <entry>2</entry>
-            <entry><code>block</code></entry>
-            <entry><code>→</code></entry>
-            <entry><code>◆ { <emphasis>statements</emphasis> }</code></entry>
-            <entry>0</entry>
-            <entry>Now that the next symbol is the terminal symbol <code>{</code> we can 'scan' to see if the input's next symbol matches. On a match, we create a modified earley item (3) in the next state set, S(1)</entry>
-          </row>
-          <row>
-            <entry namest="itemNumber" nameend="notes">S(1)</entry>
-          </row>
-          <row>
-            <entry>3</entry>
-            <entry><code>block</code></entry>
-            <entry><code>→ {</code></entry>
-            <entry><code>◆ <emphasis>statements</emphasis> }</code></entry>
-            <entry>0</entry>
-            <entry>NB the starting point is unchanged. Now we can continue to 'predict' and 'scan' items (4) and (5) from the non-terminal <emphasis>statements</emphasis>.</entry>
-          </row>
-          <row>
-            <entry>4</entry>
-            <entry><code>statements</code></entry>
-            <entry/>
-            <entry><code>◆ <emphasis>empty</emphasis></code></entry>
-            <entry>1</entry>
-            <entry>The starting position has been incremented by the length of the matched terminal symbols. This predicts (6)</entry>
-          </row>
-          <row>
-            <entry>5</entry>
-            <entry><code>statements</code></entry>
-            <entry><code>→</code></entry>
-            <entry><code>◆ <emphasis>statement</emphasis> ; <emphasis>statements</emphasis></code></entry>
-            <entry>1</entry>
-            <entry>Because there are many choices for <emphasis>statement</emphasis>, an item is predicted for each of those choices (7-11)</entry>
-          </row>
-          <row>
-            <entry>6</entry>
-            <entry><code>empty</code></entry>
-            <entry/>
-            <entry><code>◆</code></entry>
-            <entry>1</entry>
-            <entry>This is our first completion (the ◆ marker is at the end of the rule).</entry>
-          </row>
-          <row>
-            <entry>7</entry>
-            <entry><code>statement</code></entry>
-            <entry/>
-            <entry><code>◆ <emphasis>if_statement</emphasis></code></entry>
-            <entry>1</entry>
-            <entry/>
-          </row>
-          <row>
-            <entry>8</entry>
-            <entry><code>statement</code></entry>
-            <entry/>
-            <entry><code>◆ <emphasis>while_statment</emphasis></code></entry>
-            <entry>1</entry>
-            <entry/>
-          </row>
-          <row>
-            <entry>9</entry>
-            <entry><code>statement</code></entry>
-            <entry/>
-            <entry><code>◆ <emphasis>assignment</emphasis></code></entry>
-            <entry>1</entry>
-            <entry/>
-          </row>
-          <row>
-            <entry>10</entry>
-            <entry><code>statement</code></entry>
-            <entry/>
-            <entry><code>◆ <emphasis>call</emphasis></code></entry>
-            <entry/>
-            <entry/>
-          </row>
-          <row>
-            <entry>11</entry>
-            <entry><code>statement</code></entry>
-            <entry/>
-            <entry><code>◆ <emphasis>block</emphasis></code></entry>
-            <entry/>
-            <entry/>
-          </row>
-          <row>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-          </row>
-          <row>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-          </row>
-          <row>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-          </row>
-          <row>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-          </row>
-          <row>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-          </row>
-          <row>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-          </row>
-          <row>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-          </row>
-          <row>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-          </row>
-          <row>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-          </row>
-          <row>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-            <entry/>
-          </row>
-        </tbody>
-      </tgroup>
+	  
+    <table xml:id="earleyItems" frame="void">
+      <caption>Earley Items for <code>{a=0}</code></caption>
+      <colgroup>
+        <col title="ItemNum" width="5%"/>
+        <col title="Symbol" width="10%" align="right"/>
+        <col title="Rule" align="char" char="◆" width="30%"/>
+        <col title="StartState" width="5%"/>
+        <col title="Notes" width="50%"/>
+      </colgroup>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Symbol</th>
+          <th>Rule</th>
+          <th>StartState</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th colspan="5">S(0) - ∧{a=0}</th>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>program</td>
+          <td>→ ◆ block</td>
+          <td>0</td>
+          <td>Because the rule specifies a nonterminal, we have to <emphasis role="italic">predict</emphasis> the next rule, #2, for block</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>block</td>
+          <td>→ ◆ "{" statements "}"</td>
+          <td>0</td>
+          <td>Now that the next symbol is the terminal symbol { we can <emphasis role="italic">scan</emphasis> to see if the input's next symbol matches. On a match, we create a modified Earley item #3 in the next state set, S(1)</td>
+        </tr>
+        <tr>
+          <th colspan="5">S(1) - {∧a=0}</th>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>block</td>
+          <td>→ "{" ◆ statements "}"</td>
+          <td>0</td>
+          <td>NB the starting point is unchanged. Now we can continue to <emphasis role="italic">predict</emphasis> and <emphasis role="italic">scan</emphasis> items #4 and #5 from the non-terminal statements.</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>statements</td>
+          <td>→ ◆ empty</td>
+          <td>1</td>
+          <td>The start state for predictions is set to the current state number. This <emphasis role="italic">predicts</emphasis> #6</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>statements</td>
+          <td>→ ◆ statement statements</td>
+          <td>1</td>
+          <td>Because there are many choices for statement, an item is predicted for each of those choices #7-11</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>empty</td>
+          <td>→ ◆ </td>
+          <td>1</td>
+          <td>
+            <para>This is our first <emphasis role="italic">completion</emphasis> (the ◆ marker is at the end of the rule).</para>
+            <para>The start state is 1, so we look in <emphasis role="bold">S(1)</emphasis> for the rule that <emphasis role="italic">predicts</emphasis> 'empty' - i.e. item #4. We can then restate #4 as #12, moving the non-terminal to the left-hand side.</para>
+          </td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>statement</td>
+          <td>→ ◆ if_statement</td>
+          <td>1</td>
+          <td><emphasis role="italic">predicts</emphasis> <emphasis role="bold">if_statement</emphasis></td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>statement</td>
+          <td>→ ◆ while_statment</td>
+          <td>1</td>
+          <td><emphasis role="italic">predicts</emphasis> <emphasis role="bold">while_statment</emphasis></td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>statement</td>
+          <td>→ ◆ assignment</td>
+          <td>1</td>
+          <td><emphasis role="italic">predicts</emphasis> <emphasis role="bold">assignment</emphasis></td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>statement</td>
+          <td>→ ◆ call</td>
+          <td>1</td>
+          <td><emphasis role="italic">predicts</emphasis> <emphasis role="bold">call</emphasis></td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>statement</td>
+          <td>→ ◆ block</td>
+          <td>1</td>
+          <td><emphasis role="italic">predicts</emphasis> <emphasis role="bold">block</emphasis></td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td>statements</td>
+          <td>→ empty ◆ </td>
+          <td>1</td>
+          <td>a <emphasis role="italic">completion</emphasis> of #4 resulting in #13</td>
+        </tr>
+        <tr>
+          <td>13</td>
+          <td>block</td>
+          <td>→ "{" statements ◆ "}"</td>
+          <td>0</td>
+          <td>a <emphasis role="italic">scan</emphasis> of the next character, 'a' will fail to match '{', so no further items are created from this parse branch</td>
+        </tr>
+        <tr>
+          <td>14</td>
+          <td>if_statement</td>
+          <td>→ ◆ "if" condition "then" statement else-option</td>
+          <td>1</td>
+          <td>a <emphasis role="italic">scan</emphasis> of the next token fails; no further actions</td>
+        </tr>
+        <tr>
+          <td>15</td>
+          <td>while_statement</td>
+          <td>→ ◆ "while" condition "do" statement</td>
+          <td>1</td>
+          <td>a <emphasis role="italic">scan</emphasis> of the next token fails; no further actions</td>
+        </tr>
+        <tr>
+          <td>16</td>
+          <td>assignment</td>
+          <td>→ ◆ variable "=" expression</td>
+          <td>1</td>
+          <td><emphasis role="italic">predicts </emphasis> <emphasis role="bold">variable</emphasis></td>
+        </tr>
+        <tr>
+          <td>17</td>
+          <td>call</td>
+          <td>→ ◆ identifier "(" parameters ")"</td>
+          <td>1</td>
+          <td><emphasis role="italic">predicts</emphasis> <emphasis role="bold">identifier</emphasis></td>
+        </tr>
+        <tr>
+          <td>18</td>
+          <td>block</td>
+          <td>→ ◆ "{" statements "}"</td>
+          <td>1</td>
+          <td>a <emphasis role="italic">scan</emphasis> of the next token fails; no further actions</td>
+        </tr>
+        <tr>
+          <td>19</td>
+          <td>variable</td>
+          <td>→ ◆ identifier</td>
+          <td>1</td>
+          <td><emphasis role="italic">predicts</emphasis> <emphasis role="bold">identifier</emphasis> - note that this is the same <emphasis role="italic">prediction</emphasis> that results from #17, so we don't need to run this twice...</td>
+        </tr>
+        <tr>
+          <td>20</td>
+          <td>identifier</td>
+          <td>→ ◆ [abxy]</td>
+          <td>1</td>
+          <td>A <emphasis role="italic">scan</emphasis> of the next character ('a') succeeds - we can proceed to the first item of state S(2)</td>
+        </tr>
+        <tr>
+          <th colspan="5">S(2) - {a∧=0}</th>
+        </tr>
+        <tr>
+          <td>21</td>
+          <td>identifier</td>
+          <td>→ [abxy] ◆ </td>
+          <td>1</td>
+          <td>A <emphasis role="italic">completion</emphasis> of #20 resulting in #22 and #23</td>
+        </tr>
+        <tr>
+          <td>22</td>
+          <td>variable</td>
+          <td>→ identifier ◆ </td>
+          <td>1</td>
+          <td>A <emphasis role="italic">completion</emphasis> of #19 resulting in #24</td>
+        </tr>
+        <tr>
+          <td>23</td>
+          <td>call</td>
+          <td>→ identifier ◆ "(" parameters ")"</td>
+          <td>1</td>
+          <td>a <emphasis role="italic">scan</emphasis> of the next token fails; no further actions</td>
+        </tr>
+        <tr>
+          <td>24</td>
+          <td>assignment</td>
+          <td>→ variable ◆ "=" expression</td>
+          <td>1</td>
+          <td>a <emphasis role="italic">scan</emphasis> of the next token matches, so we can create a new item and increment the start state</td>
+        </tr>
+        <tr>
+          <th colspan="5">S(3) - {a=∧0}</th>
+        </tr>
+        <tr>
+          <td>25</td>
+          <td>assignment</td>
+          <td>→ variable "=" ◆ expression</td>
+          <td>1</td>
+          <td><emphasis role="italic">predicts</emphasis> expression</td>
+        </tr>
+        <tr>
+          <td>26</td>
+          <td>expression</td>
+          <td>→ ◆ number</td>
+          <td>3</td>
+          <td>(other potential non-terminal matches for expression are skipped here for brevity)</td>
+        </tr>
+        <tr>
+          <td>27</td>
+          <td>number</td>
+          <td>→ ◆ [0-9]</td>
+          <td>3</td>
+          <td>An example of how to cope with '+' - it's equivalent to a choice between a single instance... </td>
+        </tr>
+        <tr>
+          <td>28</td>
+          <td>number</td>
+          <td>→ ◆ [0-9] number</td>
+          <td>3</td>
+          <td>... or a single instance followed by the same non-terminal.</td>
+        </tr>
+        <tr>
+          <th colspan="5">S(4) - {a=0∧}</th>
+        </tr>
+        <tr>
+          <td>29</td>
+          <td>number</td>
+          <td>→ [0-9] ◆ </td>
+          <td>3</td>
+          <td>A <emphasis role="italic">completion</emphasis> of #27 resulting in 31</td>
+        </tr>
+        <tr>
+          <td>30</td>
+          <td>number</td>
+          <td>→ [0-9]◆ number</td>
+          <td>3</td>
+          <td><emphasis role="italic">predicts</emphasis> <emphasis role="bold">number</emphasis> (#32 and #33)</td>
+        </tr>
+        <tr>
+          <td>31</td>
+          <td>expression</td>
+          <td>→ number ◆ </td>
+          <td>3</td>
+          <td>A completion of #26 resulting in 34</td>
+        </tr>
+        <tr>
+          <td>32</td>
+          <td>number</td>
+          <td>→ ◆ [0-9]</td>
+          <td>4</td>
+          <td>a scan of the next token fails; no further actions</td>
+        </tr>
+        <tr>
+          <td>33</td>
+          <td>number</td>
+          <td>→ ◆ [0-9] number</td>
+          <td>4</td>
+          <td>a scan of the next token fails; no further actions</td>
+        </tr>
+        <tr>
+          <td>34</td>
+          <td>assignment</td>
+          <td>→ variable "=" expression ◆ </td>
+          <td>1</td>
+          <td>A <emphasis role="italic">completion</emphasis> of #25 resulting in #35</td>
+        </tr>
+        <tr>
+          <td>35</td>
+          <td>statement</td>
+          <td>→ assignment ◆ </td>
+          <td>1</td>
+          <td>A <emphasis role="italic">completion</emphasis> of #9 resulting in #36</td>
+        </tr>
+        <tr>
+          <td>36</td>
+          <td>statements</td>
+          <td>→ statement ◆ statements</td>
+          <td>1</td>
+          <td>A <emphasis role="italic">completion</emphasis> of #5 resulting in #37 and #38 being a <emphasis role="italic">prediction</emphasis> for <emphasis role="bold">statements</emphasis></td>
+        </tr>
+        <tr>
+          <td>37</td>
+          <td>statements</td>
+          <td>→ ◆ empty</td>
+          <td>4</td>
+          <td><emphasis role="italic">predicts</emphasis>
+            <emphasis role="bold">empty</emphasis> #39</td>
+        </tr>
+        <tr>
+          <td>38</td>
+          <td>statements</td>
+          <td>→ ◆ statement statements</td>
+          <td>4</td>
+          <td>We're going to skip the list of non-terminals here for brevity; it is left as an exercise for the reader to show that none of them will complete satisfactorily!</td>
+        </tr>
+        <tr>
+          <td>39</td>
+          <td>empty</td>
+          <td>→ ◆ </td>
+          <td>4</td>
+          <td><emphasis role="italic">completes</emphasis> itself</td>
+        </tr>
+        <tr>
+          <td>40</td>
+          <td>statements</td>
+          <td>→ empty ◆ </td>
+          <td>4</td>
+          <td><emphasis role="italic">completes </emphasis>#37</td>
+        </tr>
+        <tr>
+          <td>41</td>
+          <td>statements</td>
+          <td>→ statement statements ◆ </td>
+          <td>1</td>
+          <td><emphasis role="italic">completes </emphasis>#36 giving #42 </td>
+        </tr>
+        <tr>
+          <td>42</td>
+          <td>block</td>
+          <td>→ "{" statements ◆ "}"</td>
+          <td>0</td>
+          <td/>
+        </tr>
+        <tr>
+          <th colspan="5">S(5) - {a=0}∧</th>
+        </tr>
+        <tr>
+          <td>43</td>
+          <td>block</td>
+          <td>→ "{" statements "}" ◆ </td>
+          <td>0</td>
+          <td>Now we have a <emphasis role="italic">completion</emphasis> of the entire string, ending at the final state <emphasis role="bold">S(5)</emphasis> and beginning with the initial state <emphasis role="bold">S(0)</emphasis> - a successful parse!</td>
+        </tr>
+      </tbody>
     </table>
-		
+	  
 		<example xml:id="earleyTrees">
 			<title>Earley Tree</title>
 			<programlisting/>
