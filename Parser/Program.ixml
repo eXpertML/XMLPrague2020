@@ -12,13 +12,14 @@
       <literal dstring="}"/>
     </alt>.
   </rule>
-  <rule name="statements">:
+  <rule name="statements">
     <alt>
       <nonterminal name="statement"/>,
       <literal dstring=";"/>,
       <nonterminal name="statements"/>
     </alt>;
     <alt>
+      <nonterminal name="statement"/>
       <nonterminal name="empty"/>
     </alt>.
   </rule>
@@ -87,5 +88,24 @@
       <nonterminal name="parameters"/>,
       <literal dstring=")"/>
     </alt>.
+  </rule>
+  <rule name="identifier">
+    <alt>
+      <literal match="[a-zA-Z]"/>
+    </alt>
+  </rule>
+  <rule name="expression">
+    <alt>
+      <nonterminal name="number"/>
+    </alt>
+  </rule>
+  <rule name="number">
+    <alt>
+      <literal match="[0-9]"/>
+    </alt>
+    <alt>
+      <literal match="[0-9]"/>,
+      <nonterminal name="number"/>
+    </alt>
   </rule>
 </ixml>
