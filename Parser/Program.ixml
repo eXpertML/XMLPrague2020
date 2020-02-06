@@ -39,8 +39,7 @@
       </alt>;
       <alt>
          <nonterminal name='block'/>
-      </alt>;
-      <alt/>.
+      </alt>.
    </rule>
    <rule name='if-statement'>:
       <alt>
@@ -127,7 +126,8 @@
    <rule name='number'>:
       <alt>
          <repeat1>
-            <nonterminal name='digit'/>+</repeat1>,
+            <nonterminal name='digit'/>+
+         </repeat1>,
          <nonterminal name='S'/>
       </alt>.
    </rule>

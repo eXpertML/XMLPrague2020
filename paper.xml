@@ -12,7 +12,6 @@
           XML, XSLT, XQuery and related technologies, particularly in the field of digital
           publishing, quality analysis, and transformation.</para>
 				<para>Tom has given training courses to various institutions including publishers, universities, and the UN; he is a regular faculty member at the prestigious XML Summer School in Oxford, and one of the founding members of the Markup UK committee.</para>
-				<para>Originally from Wales, he now lives with his family in Yorkshire. Tom doesn't like to conform to stereotypes, but a deep love of Star Wars, table top games, fiction and animation sometimes make this hard.</para>
 			</personblurb>
 			<affiliation>
 				<orgname>eXpertML Ltd</orgname>
@@ -27,23 +26,15 @@
 			<para>Invisible XML <citation><xref linkend="Pemberton2013"/></citation> is a method for taking any structured
         text that can be parsed using a grammar, and treating it as XML. It means that the XML
         technology stack can be leveraged outside of XML structures.</para>
-			<para>For Invisible XML to be useful in XSLT transforms, a grammar-based parser in XSLT is required. Parser-generators that provide XSLT parsers are available, but they don't create parsers that work in the XSLT programming idiom, and can't parse ambiguous grammars.</para>
+			<para>For Invisible XML to be useful in pure XSLT transforms, a grammar-based parser available in XSLT is required: examples illustrating this are given.  Parser-generators that provide parsers as XSLT are available, but they don't create parsers that work in the XSLT programming idiom, and can't parse ambiguous grammars.</para>
 			<para>An interpretation of the Earley <citation><xref linkend="Earley1970"/></citation> parsing algorithm may solve both of these problems: an Earley parser can parse any context-independent grammar, including any that may be ambiguous; it has also been suggested that the "Earley items" created as part of a parse operation can be reconfigured into a tree structure <citation><xref linkend="Sperberg-McQueen2017"/></citation>, which naturally lends itself to processing with XSLT.</para>
-			<para>This paper aims to lay the ground-work for producing a parser generator that creates XSLT parsers for given grammars. Examples from previous papers on the topic will be used to manually create both an XML representation of the grammar, and the desired tree structure of Earley items. In turn, these should inform what an XSLT parser for that grammar should look like.</para>
-			<para>Finally the paper will discuss how the resulting parser can be abstracted and extended so
-        as to parse using an arbitrary grammar, to use other grammar languages, and to create an XSLT parser-generator.</para>
+			<para>This paper aims to lay the ground-work for producing a parser generator that creates XSLT which can parse string inputs given an EBNF-like grammar. Examples from previous papers on the topic will be used to manually create both an XML representation of the grammar, and the desired tree structure of Earley items. In turn, these should inform what an XSLT parser for that grammar should look like.</para>
+			<para>Finally the paper will discuss how the resulting parser can be abstracted and extended so as to parse using an arbitrary grammar, to use other grammar languages, and to create an XSLT parser-generator.</para>
 		</abstract>
 	</info>
-	<note>
-		<title>Note for reviewers</title>
-		<para>This paper is a (somewhat last minute) work in progress, and may be read as an extended
-      abstract, rather than an incomplete paper (although the latter description is certainly
-      accurate)!</para>
-		<para>Where time hasn't allowed, or where work still has to be carried out, I have attempted to include headings to give a rough guide to reviewers on where I hope to go with the paper.</para>
-	</note>
 	<section>
     <title>Introduction</title>
-    <para>This paper is a continuation of the work in papers on invisible XML and the Earley parser, particularly <citation><xref linkend="Pemberton2016"/></citation> and <citation><xref linkend="Sperberg-McQueen2017"/></citation>. It attempts to demonstrate an implementation of the Earley algorithm (<citation><xref linkend="Earley1970"/></citation>) - or something very close to it - using the declarative programming idiom of XSLT rather than its traditional, procedural form.</para>
+    <para>This paper is a continuation of the work in papers on Invisible XML and the Earley parser, particularly <citation><xref linkend="Pemberton2016"/></citation> and <citation><xref linkend="Sperberg-McQueen2017"/></citation>. It attempts to demonstrate an implementation of the Earley algorithm (<citation><xref linkend="Earley1970"/></citation>) - or something very close to it - using the declarative programming idiom of XSLT rather than its traditional, procedural form.</para>
     <para>The proof of concept that the paper aims to introduce is limited to a single pre-defined
       grammar; however it's hoped that this will form a groundwork for producing parsers and parser
       generators that can use not only any grammar, but grammars formed using a range of grammar
@@ -60,37 +51,30 @@
 				<title>Expected Output</title>
 				<programlisting language="xml">&lt;program>
    &lt;block>{
-      &lt;statements>
-         &lt;statement>
-            &lt;assignment>
-               &lt;variable>
-                  &lt;identifier>a&lt;/identifier>
-               &lt;/variable>
-               =
-               &lt;expression>
-                  &lt;number>0&lt;/number>
-               &lt;/expression>
-            &lt;/assignment>
-         &lt;/statement>;
-         &lt;statements>
-            &lt;empty>&lt;/empty>
-         &lt;/statements>
-      &lt;/statements>
+      &lt;statement>
+         &lt;assignment>
+            &lt;variable>
+               &lt;identifier>a&lt;/identifier>
+            &lt;/variable>
+            =
+            &lt;expression>
+               &lt;number>0&lt;/number>
+            &lt;/expression>
+         &lt;/assignment>
+      &lt;/statement>
    }&lt;/block>
 &lt;/program></programlisting>
 			</example>
       <para>This is the example we will use to create our parser; it is taken from the slides of
           <citation><xref linkend="Pemberton2016"/></citation></para>
-      <para>Invisible XML also describes annotations to reduce those elements created in the parse
-        tree that don't add meaning to the content but are an accident of the grammar formulation
-        (such as the empty <code>statements</code> element).  Recreating these isn't a primary goal
-        of this paper, but doing so shouldn't present great technical difficulty.</para>
-    </section>
-    <section>
-      <title>XSLT parsers: why we should use them</title>
-      <para>There's a number of features of Invisible XML that offer opportunities to process any data expressed in structured text. These can include documents (like Relax NG Compact, DTDs, XQuery, CSS, MarkDown, YAML, JSON, CSV, etc.), or formats embedded in XML (like path definitions in SVG, XSLT match patterns, or XPath statements).</para>
 			<para>Expressing these data in an XML format allows us to use the XML technology stack to process them using tools like XQuery, XSLT, Schematron, and XSpec.  For many who already have existing XML resources and expertise, this not only allows for employee proficiencies and
         reuse of systems, but also works within the declarative idiom.</para>
+      <para>Invisible XML also describes annotations to reduce those elements created in the parse tree that don't add meaning to the content but are an accident of the grammar formulation. Recreating these isn't a primary goal of this paper, but doing so shouldn't present great technical difficulty.</para>
+    </section>
+    <section>
+      <title>XSLT based parsers: why we should use them</title>
+      <para>There are several features of Invisible XML that offer opportunities to process any data expressed in structured text. These can include documents (like Relax NG Compact, DTDs, XQuery, CSS, MarkDown, YAML, JSON, CSV, etc.), or formats embedded in XML (like path definitions in SVG, XSLT match patterns, or XPath statements).</para>
+      <para>Where these data are already being processed by XSLT - such as exports from content management systems, or rules based validation such as Schematron - it makes sense that an XSLT based parser can be used without introducing any new technology dependencies.</para>
 			<para>A useful example would be in rules-based validation; <citation><xref linkend="Kosek2017"/></citation> gives the example of validating SVG paths, which use structured text within  an attribute:</para>
 			<example>
 				<title>An SVG Path <citation><xref linkend="Kosek2017"/></citation></title>
@@ -118,6 +102,7 @@
 &lt;/sch:rule></programlisting>
 				</example></para>
 			<para>Having the parser available as XSLT therefore empowers developers who use any of the tools in the XSLT toolchain.</para>
+      <para>The other possiblity that an XSLT parser allows is that of an extensible parser: this is discussed in more detail below.</para>
     </section>
     <section>
       <title>LL1 parsers: why we can't always use them</title>
@@ -138,18 +123,13 @@
     </section>
     <section>
       <title>The declarative idiom: writing extensible parsers</title>
-      <para>There is another limitation to using the <xref linkend="REx"/>: the parser that it produces is not only an LL1 parser, but it is a parser that is written in a functional, procedural paradigm, rather than the declarative idiom favoured by XSLT.</para>
-			<para>The XSLT idiom involves match templates, "apply template" operations and native sequences.  The procedural approach of LL1 parsers involves  passing state objects between functions.  As well as being hard to understand, the latter approach is almost impossible to extend using XSLT's native import and precedence features.</para>
-			<para>Consider a proposed XSLT parser for DTD documents.  It is relatively simple to find an EBNF grammar for the DTD syntax and apply it to a document, but this is unlikely to produce a complete parsed DTD: there is no way for EBNF to convey the meaning of entities and their expansions, and so entities will be treated as just another structure in the parse tree, without parsing any of the data which they represent.  Expanding and including the entities would involve recursive operations on the results of each parse.</para>
+      <para>There is another limitation to using the <xref linkend="REx"/>: the parser that it produces is not only an LL1 parser, but one that produces hundreds of state transitions that are designed to be understood by its generated functions, rather than by a human developer.  Because the code that is produced is impenetrable to ordinary humans, it is impossible for a human developer to take it and extend it to deal with extra features, let alone doing so leveraging the inherent approaches and strengths of XSLT.</para>
+			<para>The XSLT idiom involves match templates, "apply template" operations and native sequences. The procedural idom of LL1 parsers involves passing state objects between functions. As well as being hard to understand, the latter  is almost impossible to extend using XSLT's native import and precedence features.</para>
+			<para>Consider a proposed XSLT parser for DTD documents.  The DTD language is hard to process because it mixes a relatively simple EBNF grammar for the syntax with a mechanism for macro substitutions.  It is easy to parse the grammar, but there is no way for EBNF to convey the meaning of entities and their expansions: entities will be treated as just another structure in the parse tree, without parsing any of the data which they represent. Expanding and including the entities would involve recursive operations on the results of each parse.</para>
 			<para>Better approaches may involve parsing the entities as they are defined, and including the results in the resulting parse tree; doing so would mean extending the generated parser with some bespoke code.  One of the goals of this paper is to establish whether (or not!) it is possible to write a generated parser that would allow extension using the well established XSLT methods of doing so: over-riding templates in including stylesheets, priorities, and use of instructions like <code>xsl:next-match</code> or <code>xsl:apply-imports</code>.</para>
     </section>
     <section>
       <title>The Earley Parser</title>
-			<note>
-				<title>Notes for reviewers</title>
-				<para>This section will include a high level overview of the Earley Parser, including a demonstration of how Earley Items are calculated.</para>
-				<para>It will also review the Earley Tree idea introduced by C M Sperberg-McQueen, and can compare nodes in the tree with the associated Earley Items.</para>
-			</note>
     </section>
   </section>
 	<section>
@@ -200,109 +180,189 @@
 		<title>Code Listings</title>
 		<example xml:id="grammar">
 			<title>Invisible XML Grammar</title>
-			<programlisting>program: block.
-block: "{", statements, "}".
-statements: statement, ";", statements; empty.
-statement: if statement; while statement; assignment; call; block.
-if statement: "if", condition, "then", statement, else-option.
-else-option: "else", statement; empty.
-empty: .
-while statement: "while", condition, "do", statement.
-assignment: variable, "=", expression.
+			<programlisting xml:id="program.cixml">program: block.
+block: "{", S, statement*(";", S), "}", S.
+statement: if-statement; while-statement; assignment; call; block; .
+if-statement: "if", S, condition, "then", S, statement, else-part?.
+else-part: "else", S, statement.
+while-statement: "while", S, condition, "do", S, statement.
+assignment: variable, "=", S, expression.
 variable: identifier.
-call: identifier, "(", parameters, ")".</programlisting>
+call: identifier, "(", S, parameter*(",", S), ")", S.
+parameter: -expression.
+identifier: letter+, S.
+expression: identifier; number.
+number: digit+, S.
+-letter: ["a"-"z"]; ["A"-"Z"].
+-digit: ["0"-"9"].
+condition: identifier.
+-S: " "*.</programlisting>
 		</example>
 		<example xml:id="xmlgrammar">
-			<title>Grammar (iXML as XML format)</title>
+			<title xml:id="program.ixml">Grammar (iXML as XML format)</title>
 			<programlisting>&lt;ixml>
-  &lt;rule name="program">: 
-    &lt;alt>
-      &lt;nonterminal name="block"/>
-    &lt;/alt>.
-  &lt;/rule>
-  &lt;rule name="block">:
-    &lt;alt>
-      &lt;literal dstring="{"/>,
-      &lt;nonterminal name="statements"/>,
-      &lt;literal dstring="}"/>
-    &lt;/alt>.
-  &lt;/rule>
-  &lt;rule name="statements">:
-    &lt;alt>
-      &lt;nonterminal name="statement"/>,
-      &lt;literal dstring=";"/>,
-      &lt;nonterminal name="statements"/>
-    &lt;/alt>;
-    &lt;alt>
-      &lt;nonterminal name="empty"/>
-    &lt;/alt>.
-  &lt;/rule>
-  &lt;rule name="statement">:
-    &lt;alt>
-      &lt;nonterminal name="if statement"/>
-    &lt;/alt>;
-    &lt;alt>
-      &lt;nonterminal name="while statement"/>
-    &lt;/alt>;
-    &lt;alt>
-      &lt;nonterminal name="assignment"/>
-    &lt;/alt>;
-    &lt;alt>
-      &lt;nonterminal name="call"/>
-    &lt;/alt>;
-    &lt;alt>
-      &lt;nonterminal name="block"/>
-    &lt;/alt>.
-  &lt;/rule>
-  &lt;rule name="if statement">:
-    &lt;alt>
-      &lt;literal dstring="if"/>,
-      &lt;nonterminal name="condition"/>,
-      &lt;literal dstring="then"/>,
-      &lt;nonterminal name="statement"/>,
-      &lt;nonterminal name="else-option"/>
-    &lt;/alt>.
-  &lt;/rule>
-  &lt;rule name="else-option">:
-    &lt;alt>
-      &lt;literal dstring="else"/>,
-      &lt;nonterminal name="statement"/>
-    &lt;/alt>;
-    &lt;alt>
-      &lt;nonterminal name="empty"/>
-    &lt;/alt>.
-  &lt;/rule>
-  &lt;rule name="empty">:
-    &lt;alt/>.
-  &lt;/rule>
-  &lt;rule name="while statement">:
-    &lt;alt>
-      &lt;literal dstring="while"/>,
-      &lt;nonterminal name="condition"/>,
-      &lt;literal dstring="do"/>,
-      &lt;nonterminal name="statement"/>
-    &lt;/alt>.
-  &lt;/rule>
-  &lt;rule name="assignment">:
-    &lt;alt>
-      &lt;nonterminal name="variable"/>,
-      &lt;literal dstring="="/>,
-      &lt;nonterminal name="expression"/>
-    &lt;/alt>.
-  &lt;/rule>
-  &lt;rule name="variable">:
-    &lt;alt>
-      &lt;nonterminal name="identifier"/>
-    &lt;/alt>.
-  &lt;/rule>
-  &lt;rule name="call">:
-    &lt;alt>
-      &lt;nonterminal name="identifier"/>,
-      &lt;literal dstring="("/>,
-      &lt;nonterminal name="parameters"/>,
-      &lt;literal dstring=")"/>
-    &lt;/alt>.
-  &lt;/rule>
+   &lt;rule name='program'>:
+      &lt;alt>
+         &lt;nonterminal name='block'/>
+      &lt;/alt>.
+   &lt;/rule>
+   &lt;rule name='block'>:
+      &lt;alt>
+         &lt;literal dstring='{'/>,
+         &lt;nonterminal name='S'/>,
+         &lt;repeat0>
+            &lt;nonterminal name='statement'/>*
+            &lt;sep>(
+               &lt;alts>
+                  &lt;alt>
+                     &lt;literal dstring=';'/>,
+                     &lt;nonterminal name='S'/>
+                  &lt;/alt>
+               &lt;/alts>)
+            &lt;/sep>
+         &lt;/repeat0>,
+         &lt;literal dstring='}'/>,
+         &lt;nonterminal name='S'/>
+      &lt;/alt>.
+   &lt;/rule>
+   &lt;rule name='statement'>:
+      &lt;alt>
+         &lt;nonterminal name='if-statement'/>
+      &lt;/alt>;
+      &lt;alt>
+         &lt;nonterminal name='while-statement'/>
+      &lt;/alt>;
+      &lt;alt>
+         &lt;nonterminal name='assignment'/>
+      &lt;/alt>;
+      &lt;alt>
+         &lt;nonterminal name='call'/>
+      &lt;/alt>;
+      &lt;alt>
+         &lt;nonterminal name='block'/>
+      &lt;/alt>.
+   &lt;/rule>
+   &lt;rule name='if-statement'>:
+      &lt;alt>
+         &lt;literal dstring='if'/>,
+         &lt;nonterminal name='S'/>,
+         &lt;nonterminal name='condition'/>,
+         &lt;literal dstring='then'/>,
+         &lt;nonterminal name='S'/>,
+         &lt;nonterminal name='statement'/>,
+         &lt;option>
+            &lt;nonterminal name='else-part'/>?&lt;/option>
+      &lt;/alt>.
+   &lt;/rule>
+   &lt;rule name='else-part'>:
+      &lt;alt>
+         &lt;literal dstring='else'/>,
+         &lt;nonterminal name='S'/>,
+         &lt;nonterminal name='statement'/>
+      &lt;/alt>.
+   &lt;/rule>
+   &lt;rule name='while-statement'>:
+      &lt;alt>
+         &lt;literal dstring='while'/>,
+         &lt;nonterminal name='S'/>,
+         &lt;nonterminal name='condition'/>,
+         &lt;literal dstring='do'/>,
+         &lt;nonterminal name='S'/>,
+         &lt;nonterminal name='statement'/>
+      &lt;/alt>.
+   &lt;/rule>
+   &lt;rule name='assignment'>:
+      &lt;alt>
+         &lt;nonterminal name='variable'/>,
+         &lt;literal dstring='='/>,
+         &lt;nonterminal name='S'/>,
+         &lt;nonterminal name='expression'/>
+      &lt;/alt>.
+   &lt;/rule>
+   &lt;rule name='variable'>:
+      &lt;alt>
+         &lt;nonterminal name='identifier'/>
+      &lt;/alt>.
+   &lt;/rule>
+   &lt;rule name='call'>:
+      &lt;alt>
+         &lt;nonterminal name='identifier'/>,
+         &lt;literal dstring='('/>,
+         &lt;nonterminal name='S'/>,
+         &lt;repeat0>
+            &lt;nonterminal name='parameter'/>*
+            &lt;sep>(
+               &lt;alts>
+                  &lt;alt>
+                     &lt;literal dstring=','/>,
+                     &lt;nonterminal name='S'/>
+                  &lt;/alt>
+               &lt;/alts>)
+            &lt;/sep>
+         &lt;/repeat0>,
+         &lt;literal dstring=')'/>,
+         &lt;nonterminal name='S'/>
+      &lt;/alt>.
+   &lt;/rule>
+   &lt;rule name='parameter'>:
+      &lt;alt>
+         &lt;nonterminal mark='-' name='expression'/>
+      &lt;/alt>.&lt;/rule>
+   &lt;rule name='identifier'>:
+      &lt;alt>
+         &lt;repeat1>
+            &lt;nonterminal name='letter'/>+
+         &lt;/repeat1>,
+         &lt;nonterminal name='S'/>
+      &lt;/alt>.
+   &lt;/rule>
+   &lt;rule name='expression'>:
+      &lt;alt>
+         &lt;nonterminal name='identifier'/>
+      &lt;/alt>;
+      &lt;alt>
+         &lt;nonterminal name='number'/>
+      &lt;/alt>.
+   &lt;/rule>
+   &lt;rule name='number'>:
+      &lt;alt>
+         &lt;repeat1>
+            &lt;nonterminal name='digit'/>+
+         &lt;/repeat1>,
+         &lt;nonterminal name='S'/>
+      &lt;/alt>.
+   &lt;/rule>
+   &lt;rule mark='-' name='letter'>:
+      &lt;alt>
+         &lt;inclusion>[
+            &lt;range from='a' to='z'>-&lt;/range>]
+         &lt;/inclusion>
+      &lt;/alt>;
+      &lt;alt>
+         &lt;inclusion>[
+            &lt;range from='A' to='Z'>-&lt;/range>]
+         &lt;/inclusion>
+      &lt;/alt>.
+   &lt;/rule>
+   &lt;rule mark='-' name='digit'>:
+      &lt;alt>
+         &lt;inclusion>[
+            &lt;range from='0' to='9'>-&lt;/range>]
+         &lt;/inclusion>
+      &lt;/alt>.
+   &lt;/rule>
+   &lt;rule name='condition'>:
+      &lt;alt>
+         &lt;nonterminal name='identifier'/>
+      &lt;/alt>.
+   &lt;/rule>
+   &lt;rule mark='-' name='S'>:
+      &lt;alt>
+         &lt;repeat0>
+            &lt;literal dstring=' '/>*
+         &lt;/repeat0>
+      &lt;/alt>.
+   &lt;/rule>
 &lt;/ixml></programlisting>
 		</example>
 		<example xml:id="output">
@@ -330,7 +390,7 @@ call: identifier, "(", parameters, ")".</programlisting>
 		</example>
 	  
     <table xml:id="earleyItems" frame="void">
-      <caption>Earley Items for <code>{a=0}</code></caption>
+      <caption xml:id="eItems">Earley Items for <code>{a=0}</code></caption>
       <colgroup>
         <col title="ItemNum" width="5%"/>
         <col title="Symbol" width="10%" align="right"/>
@@ -407,13 +467,6 @@ call: identifier, "(", parameters, ")".</programlisting>
           <td><emphasis role="italic">predicts</emphasis> <emphasis role="bold">if_statement</emphasis></td>
         </tr>
         <tr>
-          <td>8</td>
-          <td>statement</td>
-          <td>→ ◆ while_statment</td>
-          <td>1</td>
-          <td><emphasis role="italic">predicts</emphasis> <emphasis role="bold">while_statment</emphasis></td>
-        </tr>
-        <tr>
           <td>9</td>
           <td>statement</td>
           <td>→ ◆ assignment</td>
@@ -426,13 +479,6 @@ call: identifier, "(", parameters, ")".</programlisting>
           <td>→ ◆ call</td>
           <td>1</td>
           <td><emphasis role="italic">predicts</emphasis> <emphasis role="bold">call</emphasis></td>
-        </tr>
-        <tr>
-          <td>11</td>
-          <td>statement</td>
-          <td>→ ◆ block</td>
-          <td>1</td>
-          <td><emphasis role="italic">predicts</emphasis> <emphasis role="bold">block</emphasis></td>
         </tr>
         <tr>
           <td>12</td>
@@ -456,13 +502,6 @@ call: identifier, "(", parameters, ")".</programlisting>
           <td>a <emphasis role="italic">scan</emphasis> of the next token fails; no further actions</td>
         </tr>
         <tr>
-          <td>15</td>
-          <td>while_statement</td>
-          <td>→ ◆ "while" condition "do" statement</td>
-          <td>1</td>
-          <td>a <emphasis role="italic">scan</emphasis> of the next token fails; no further actions</td>
-        </tr>
-        <tr>
           <td>16</td>
           <td>assignment</td>
           <td>→ ◆ variable "=" expression</td>
@@ -475,13 +514,6 @@ call: identifier, "(", parameters, ")".</programlisting>
           <td>→ ◆ identifier "(" parameters ")"</td>
           <td>1</td>
           <td><emphasis role="italic">predicts</emphasis> <emphasis role="bold">identifier</emphasis></td>
-        </tr>
-        <tr>
-          <td>18</td>
-          <td>block</td>
-          <td>→ ◆ "{" statements "}"</td>
-          <td>1</td>
-          <td>a <emphasis role="italic">scan</emphasis> of the next token fails; no further actions</td>
         </tr>
         <tr>
           <td>19</td>
@@ -572,7 +604,7 @@ call: identifier, "(", parameters, ")".</programlisting>
         <tr>
           <td>30</td>
           <td>number</td>
-          <td>→ [0-9]◆ number</td>
+          <td>→ [0-9] ◆ number</td>
           <td>3</td>
           <td><emphasis role="italic">predicts</emphasis> <emphasis role="bold">number</emphasis> (#32 and #33)</td>
         </tr>
@@ -669,15 +701,17 @@ call: identifier, "(", parameters, ")".</programlisting>
           <td>block</td>
           <td>→ "{" statements "}" ◆ </td>
           <td>0</td>
-          <td>Now we have a <emphasis role="italic">completion</emphasis> of the entire string, ending at the final state <emphasis role="bold">S(5)</emphasis> and beginning with the initial state <emphasis role="bold">S(0)</emphasis> - a successful parse!</td>
+          <td>Now we have a <emphasis role="italic">completion</emphasis> of the entire string, ending at the final state <emphasis role="bold">S(5)</emphasis> and beginning with the initial state <emphasis role="bold">S(0)</emphasis> - but we aren't quite finished because it doesn't match the start symbol...</td>
+        </tr>
+        <tr>
+          <td>44</td>
+          <td>program</td>
+          <td>→ block ◆</td>
+          <td>0</td>
+          <td>Parse Success!</td>
         </tr>
       </tbody>
     </table>
-	  
-		<example xml:id="earleyTrees">
-			<title>Earley Tree</title>
-			<programlisting/>
-		</example>
 	</appendix>
 
 </article>
