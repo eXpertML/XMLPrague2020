@@ -130,6 +130,53 @@
     </section>
     <section>
       <title>The Earley Parser</title>
+      <para>The Earley parser is known as a chart parser: it works by compiling an intermediate data structure, originally conceived as a chart or set of <emphasis>Earley Items</emphasis>.  Each of these items represents a step in a partial parse, evaluating one rule of the grammar on a defined sub-string.  The real trick of the algorithm is that most of the useless partial parses are avoided altogether.</para>
+      <para>The process of (or function for) creating items is called the <emphasis>recogniser</emphasis>.  This creates an item consisting of the following information fields:</para>
+      <itemizedlist>
+        <listitem>
+          <para>The current <emphasis>state</emphasis>; the state is a representation of how much of the original string has been parsed (or alternatively, how much of the string remains to be parsed).</para>
+        </listitem>
+        <listitem>
+          <para>The current <emphasis>rule</emphasis> being evaluated; a rule consists of one <emphasis>symbol</emphasis> on the left hand side, which can be decomposed into a sequence of <emphasis>terminal</emphasis> (literal strings and keywords) and <emphasis>non-terminal</emphasis> symbols; the latter are non-terminal because they refer to other rules, and other sequences of possible symbols.</para>
+        </listitem>
+        <listitem>
+          <para>The position within the rule; this is often given as markup in a representation of the rule itself, such as: <equation>
+              <mathphrase>block → "{" ◆ statements "}"</mathphrase>
+            </equation> where the term before the arrow represents the <inlineequation>
+              <mathphrase><emphasis>symbol</emphasis>, terms to the left of the  ◆</mathphrase>
+            </inlineequation> character represent rule definitions which have already been processed, and terms to the right those which have yet to be processed.</para>
+        </listitem>
+        <listitem>
+          <para>The <emphasis>start state</emphasis>; that is, the state that was current when the processing of the current <emphasis>symbol</emphasis> and <emphasis>rule</emphasis> began.</para>
+        </listitem>
+      </itemizedlist>
+      <para>The initial Earley item is normally defined by the grammar (often by convention as being the first rule in the grammar); the rest of the items are generated from existing ones according to the type of symbol to the right of the <inlineequation>
+          <mathphrase>◆</mathphrase>
+        </inlineequation> character:</para>
+      <variablelist>
+        <varlistentry>
+          <term>Completion</term>
+          <listitem>
+            <para>If there is no next symbol, the rule has been completed!  If there is a parent item, they can be advanced by a symbol and added in the current state.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Prediction</term>
+          <listitem>
+            <para>If the next symbol is a non-terminal symbol, we review our set of items to see if the non-terminal has already been processed in the current state.</para>
+            <para>If it has, we don't need to add any items by processing it twice: this not only improves efficiency by avoiding replication, but avoids the possibility of infinite recursion.</para>
+            <para>If the non-terminal has not been processed, we add the corresponding rule to the set, starting at the beginning symbol as may be expected.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Scan</term>
+          <listitem>
+            <para>If the next symbol is a terminal symbol, we check to see if it matches the corresponding yet-to-be-parsed substring in the input.</para>
+            <para>When a match is achieved, we can advance to the next symbol, as well as advancing the current state.</para>
+            <para>When a match is not achieved, the rule has failed, and no further items are created from the current rule.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
     </section>
   </section>
 	<section>
