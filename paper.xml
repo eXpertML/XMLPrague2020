@@ -47,9 +47,9 @@
 					<title>Proposed input</title>
 					<programlisting>{a=0}</programlisting>
 				</example> can be expressed without losing pertinent information in an XML format such as:</para>
-			<example>
-				<title>Expected Output</title>
-				<programlisting language="xml">&lt;program>
+			<example xml:id="output">
+        <title>Expected Output</title>
+        <programlisting language="xml">&lt;program>
    &lt;block>{
       &lt;statement>
          &lt;assignment>
@@ -64,7 +64,7 @@
       &lt;/statement>
    }&lt;/block>
 &lt;/program></programlisting>
-			</example>
+      </example>
       <para>This is the example we will use to create our parser; it is taken from the slides of
           <citation><xref linkend="Pemberton2016"/></citation></para>
 			<para>Expressing these data in an XML format allows us to use the XML technology stack to process them using tools like XQuery, XSLT, Schematron, and XSpec.  For many who already have existing XML resources and expertise, this not only allows for employee proficiencies and
@@ -129,7 +129,7 @@
 			<para>Better approaches may involve parsing the entities as they are defined, and including the results in the resulting parse tree; doing so would mean extending the generated parser with some bespoke code.  One of the goals of this paper is to establish whether (or not!) it is possible to write a generated parser that would allow extension using the well established XSLT methods of doing so: over-riding templates in including stylesheets, priorities, and use of instructions like <code>xsl:next-match</code> or <code>xsl:apply-imports</code>.</para>
     </section>
     <section>
-      <title>The Earley Parser</title>
+      <title>The Earley Parser (very) briefly explained</title>
       <para>The Earley parser is known as a chart parser: it works by compiling an intermediate data structure, originally conceived as a chart or set of <emphasis>Earley Items</emphasis>.  Each of these items represents a step in a partial parse, evaluating one rule of the grammar on a defined sub-string.  The real trick of the algorithm is that most of the useless partial parses are avoided altogether.</para>
       <para>The process of (or function for) creating items is called the <emphasis>recogniser</emphasis>.  This creates an item consisting of the following information fields:</para>
       <itemizedlist>
@@ -177,15 +177,61 @@
           </listitem>
         </varlistentry>
       </variablelist>
+      <para>In this way, Earley items are added to the set until there are no more symbols left to
+        resolve, or until there are no more items to add in the <emphasis>final state</emphasis>
+        (i.e. the state representing the end of the parsed string).  If there exists an item in this
+        final state that started in the initial state, we know that we have found a valid
+        parse.</para>
+      <para>Creating a the parse tree can then be achieved simply by following the trail of items
+        from this final item to the first, discarding any which are incorrect, incomplete or which
+        do not contribute.  Terminals form the leaf nodes, and Non-terminals the containing branch
+        nodes.</para>
+    </section>
+    <section>
+      <title>Macro Substitution</title>
+      <para>There is another desirable property that would be useful in an extensible parser: the
+        ability to handle macro substitution (such as DTD entity resolution) as part of the parse.
+        While the implementation of such a feature is not the goal of this paper, it was hoped that
+        the implementation would at least allow for this in the future.</para>
+      <para>It is perhaps not immediately apparent whether or not this is even possible: the effect
+        is that the string to parse will be altered by the act of parsing itself.</para>
+      <para>The concept of the state of the parse in the Earley algorithm is often defined using
+        character positions in the string.  Clearly, this method will not support live changes to
+        the input string whilst parsing!  However, it seems reasonable that other methods of
+        denoting the state ought to be possible: at any given point in the parse, what the state
+        really needs to tell you is what is (or was) coming next (for the purposes of the next
+          <emphasis>scan</emphasis> operation).  The only other requirement is consistency in that
+        all references must point to the same state.</para>
     </section>
   </section>
 	<section>
 		<title>Methodology</title>
     <section>
-      <title>Define a Grammar represented in XML</title>
-    </section>
-    <section>
-      <title>Define the desired parsed output</title>
+      <title>Choosing a grammar language</title>
+      <para>There are a number of grammar languages in widespread use, many based on the
+          <emphasis>Backhaus-Nauer Format</emphasis>.  Variants can be seen in use in specifications
+        for many XML technologies, including the W3C specifications.</para>
+      <para>For this paper, Invisible XML was chosen because of the following
+        characteristics:</para>
+      <itemizedlist>
+        <listitem>
+          <para>It includes optional and repeating definitions from EBNF, which make it much easier
+            to write than standard BNF.</para>
+        </listitem>
+        <listitem>
+          <para>It has an XML representation (see <xref endterm="ixmlSpec"/>), which makes it
+            perfect for use with XSLT without having to bootstrap with another parser.</para>
+        </listitem>
+        <listitem>
+          <para>It includes options which define how the XML representation - which symbols
+            represent elements, which attributes, and which can be omitted from the result tree
+            altogether.</para>
+        </listitem>
+      </itemizedlist>
+      <para>The last point alone makes Invisible XML uniquely suitable for the task.</para>
+      <para>In practice, a proof of concept did not require every feature of Invisible XML to be
+        implemented at this time: attribute handling, for instance, is not required to handle our
+        example, but should be trivial to implement in the future.</para>
     </section>
     <section>
       <title>Determine the Earley objects</title>
