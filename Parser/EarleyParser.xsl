@@ -48,12 +48,10 @@
     <xd:desc>ixml match template</xd:desc>
   </xd:doc>
   <xsl:template match="ixml" mode="e:parseTree">
-    <e:parseTree>
-      <xsl:apply-templates select="rule[1]" mode="#current">
-        <xsl:with-param name="visited" select="map{rule[1]/@name : map{1: ()}}" tunnel="yes"/>
-        <xsl:with-param name="state" select="1" tunnel="yes"/>
-      </xsl:apply-templates>      
-    </e:parseTree>
+    <xsl:apply-templates select="rule[1]" mode="#current">
+      <xsl:with-param name="visited" select="map{rule[1]/@name : map{1: ()}}" tunnel="yes"/>
+      <xsl:with-param name="state" select="1" tunnel="yes"/>
+    </xsl:apply-templates>
   </xsl:template>
   
   <xd:doc>
@@ -137,14 +135,14 @@
       </xsl:call-template>
     </xsl:variable>
     <e:alt state="{$this.state}">
-    <xsl:variable name="remaining" select="($children/*/@remaining)[last()]" as="xs:string?"/>
+      <xsl:variable name="remaining" select="($children/*/@remaining)[last()]" as="xs:string?"/>
       <xsl:choose>
         <xsl:when test="$remaining">
           <xsl:variable name="new.states" select="($states, $remaining[not($remaining = $states)])"/>
-          <xsl:attribute name="ends" select="(string(index-of($new.states, $remaining)), $children/*/@ends) ! tokenize(., '\s') => distinct-values() => string-join(' ')"/>
+          <xsl:attribute name="ends" select="(string(index-of($new.states, $remaining)), $children/*/@ends)[last()] ! tokenize(., '\s') => distinct-values() => string-join(' ')"/>
         </xsl:when>
-        <xsl:when test="$children/*/@ends">
-          <xsl:attribute name="ends" select="$children/*/@ends ! tokenize(., '\s') => distinct-values() => string-join(' ')"/>
+        <xsl:when test="$children/*/@ends[. ne ''] and not($children/*[self::e:fail])">
+          <xsl:attribute name="ends" select="($children/*/@ends[. ne ''])[last()] ! tokenize(., '\s') => distinct-values() => string-join(' ')"/>
         </xsl:when>
       </xsl:choose>
       <xsl:sequence select="$children"/>
@@ -172,11 +170,11 @@
           <xsl:with-param name="visited" tunnel="yes" select="e:visit($visited, @name, $state)"/>
         </xsl:apply-templates>
       </xsl:when>
-      <xsl:when test="not($visited(@name)($state))">
+      <xsl:when test="not($visited(@name)(string($state)))">
         <e:fail state="{$state}" nt="{@name}"/>
       </xsl:when>
       <xsl:otherwise>
-        <e:nt state="{$state}" ends="{$visited(@name)($state)}">
+        <e:nt state="{$state}" ends="{$visited(@name)(string($state))}">
           <xsl:copy-of select="@name"/>
         </e:nt>
       </xsl:otherwise>
@@ -272,6 +270,25 @@
         <xsl:with-param name="children" select="$equivalent"/>
       </xsl:call-template>
     </xsl:if>
+  </xsl:template>
+  
+  <xd:doc>
+    <xd:desc></xd:desc>
+  </xd:doc>
+  <xsl:template match="option" mode="e:parseTree">
+    <xsl:variable name="GID" select="(@gid, generate-id(.))[1]"/>
+    <xsl:call-template name="e:process_children">
+      <xsl:with-param name="children">
+        <alts gid="$GID">
+          <alt>
+            <empty/>
+          </alt>
+          <alt>
+            <xsl:sequence select="child::*"/>
+          </alt>
+        </alts>
+      </xsl:with-param>
+    </xsl:call-template>
   </xsl:template>
   
   <xd:doc>
@@ -582,7 +599,7 @@
       </xsl:choose>
     </xsl:variable>
     <xsl:if test="$children">
-      <xsl:element name="{@name}">
+      <xsl:element name="{@name}" exclude-result-prefixes="e" inherit-namespaces="no">
         <xsl:if test="$debug">
           <xsl:copy-of select="@state, @ends"/>
         </xsl:if>
@@ -648,10 +665,6 @@
     <xsl:value-of select="string(.)"/>
   </xsl:template>
   
-  <!-- clean-up mode -->
-  
-  <xsl:mode name="e:cleanup" on-no-match="shallow-copy" exclude-result-prefixes="e" streamable="yes"/>
-  
   <!-- parsing function -->
   
   <xd:doc>
@@ -692,7 +705,7 @@
         </e:parse>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:apply-templates mode="e:cleanup" select="$pruneTree"/>
+        <xsl:sequence select="$pruneTree"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>

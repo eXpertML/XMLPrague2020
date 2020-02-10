@@ -1,427 +1,274 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<e:parseTree xmlns:e="http://schema.expertml.com/EarleyParser">
-  <e:rule state="1" ends="2 3 4 5 0" name="program">
-    <e:alt state="1" ends="2 3 4 5 0">
-      <e:rule state="1" ends="2 3 4 5 0" name="block">
-        <e:alt state="1" ends="2 3 4 5 0">
-          <e:literal state="1" ends="2" remaining="a=0}">{</e:literal>
-          <e:rule state="2" ends="" mark="-" name="S">
-            <e:alt state="2">
-              <e:alts state="2" gid="d2e277">
-                <e:alt state="2">
-                  <e:empty state="2"/>
-                </e:alt>
-                <e:alt state="2">
-                  <e:fail state="2" string=" "/>
-                </e:alt>
-              </e:alts>
-            </e:alt>
-          </e:rule>
-          <e:alts state="2" ends="3 4 5" gid="d2e19">
-            <e:alt state="2">
-              <e:empty state="2"/>
-            </e:alt>
-            <e:alt state="2" ends="3 4 5">
-              <e:rule state="2" ends="3 4 5" name="statement">
-                <e:alt state="2" ends="">
-                  <e:rule state="2" ends="" name="if-statement">
-                    <e:alt state="2">
-                      <e:fail state="2" string="if"/>
-                    </e:alt>
-                  </e:rule>
-                </e:alt>
-                <e:alt state="2" ends="">
-                  <e:rule state="2" ends="" name="while-statement">
-                    <e:alt state="2">
-                      <e:fail state="2" string="while"/>
-                    </e:alt>
-                  </e:rule>
-                </e:alt>
-                <e:alt state="2" ends="3 4 5">
-                  <e:rule state="2" ends="3 4 5" name="assignment">
-                    <e:alt state="2" ends="3 4 5">
-                      <e:rule state="2" ends="3" name="variable">
-                        <e:alt state="2" ends="3">
-                          <e:rule state="2" ends="3" name="identifier">
-                            <e:alt state="2" ends="3">
-                              <e:rule state="2" ends="3" mark="-" name="letter">
-                                <e:alt state="2" ends="3">
-                                  <e:literal state="2" ends="3" remaining="=0}">a</e:literal>
-                                </e:alt>
-                                <e:alt state="2">
-                                  <e:fail state="2" regex="^([A-Z]).*?$"/>
-                                </e:alt>
-                              </e:rule>
-                              <e:alts state="3" ends="" gid="d2e196">
-                                <e:alt state="3">
-                                  <e:empty state="3"/>
-                                </e:alt>
-                                <e:alt state="3" ends="">
-                                  <e:rule state="3" ends="" mark="-" name="letter">
-                                    <e:alt state="3">
-                                      <e:fail state="3" regex="^([a-z]).*?$"/>
-                                    </e:alt>
-                                    <e:alt state="3">
-                                      <e:fail state="3" regex="^([A-Z]).*?$"/>
-                                    </e:alt>
-                                  </e:rule>
-                                </e:alt>
-                              </e:alts>
-                              <e:rule state="3" ends="" mark="-" name="S">
-                                <e:alt state="3">
-                                  <e:alts state="3" gid="d2e277">
-                                    <e:alt state="3">
-                                      <e:empty state="3"/>
-                                    </e:alt>
-                                    <e:alt state="3">
-                                      <e:fail state="3" string=" "/>
-                                    </e:alt>
-                                  </e:alts>
-                                </e:alt>
-                              </e:rule>
-                            </e:alt>
-                          </e:rule>
-                        </e:alt>
-                      </e:rule>
-                      <e:literal state="3" ends="4" remaining="0}">=</e:literal>
-                      <e:rule state="4" ends="" mark="-" name="S">
-                        <e:alt state="4">
-                          <e:alts state="4" gid="d2e277">
-                            <e:alt state="4">
-                              <e:empty state="4"/>
-                            </e:alt>
-                            <e:alt state="4">
-                              <e:fail state="4" string=" "/>
-                            </e:alt>
-                          </e:alts>
-                        </e:alt>
-                      </e:rule>
-                      <e:rule state="4" ends="5" name="expression">
-                        <e:alt state="4" ends="">
-                          <e:rule state="4" ends="" name="identifier">
-                            <e:alt state="4" ends="">
-                              <e:rule state="4" ends="" mark="-" name="letter">
-                                <e:alt state="4">
-                                  <e:fail state="4" regex="^([a-z]).*?$"/>
-                                </e:alt>
-                                <e:alt state="4">
-                                  <e:fail state="4" regex="^([A-Z]).*?$"/>
-                                </e:alt>
-                              </e:rule>
-                              <e:alts state="4" ends="" gid="d2e196">
-                                <e:alt state="4">
-                                  <e:empty state="4"/>
-                                </e:alt>
-                                <e:alt state="4" ends="">
-                                  <e:nt state="4" ends="" name="letter"/>
-                                </e:alt>
-                              </e:alts>
-                              <e:nt state="4" ends="" name="S"/>
-                            </e:alt>
-                          </e:rule>
-                        </e:alt>
-                        <e:alt state="4" ends="5">
-                          <e:rule state="4" ends="5" name="number">
-                            <e:alt state="4" ends="5">
-                              <e:rule state="4" ends="5" mark="-" name="digit">
-                                <e:alt state="4" ends="5">
-                                  <e:literal state="4" ends="5" remaining="}">0</e:literal>
-                                </e:alt>
-                              </e:rule>
-                              <e:alts state="5" ends="" gid="d2e223">
-                                <e:alt state="5">
-                                  <e:empty state="5"/>
-                                </e:alt>
-                                <e:alt state="5" ends="">
-                                  <e:rule state="5" ends="" mark="-" name="digit">
-                                    <e:alt state="5">
-                                      <e:fail state="5" regex="^([0-9]).*?$"/>
-                                    </e:alt>
-                                  </e:rule>
-                                </e:alt>
-                              </e:alts>
-                              <e:rule state="5" ends="" mark="-" name="S">
-                                <e:alt state="5">
-                                  <e:alts state="5" gid="d2e277">
-                                    <e:alt state="5">
-                                      <e:empty state="5"/>
-                                    </e:alt>
-                                    <e:alt state="5">
-                                      <e:fail state="5" string=" "/>
-                                    </e:alt>
-                                  </e:alts>
-                                </e:alt>
-                              </e:rule>
-                            </e:alt>
-                          </e:rule>
-                        </e:alt>
-                      </e:rule>
-                    </e:alt>
-                  </e:rule>
-                </e:alt>
-                <e:alt state="2" ends="">
-                  <e:rule state="2" ends="" name="call">
-                    <e:alt state="2" ends="">
-                      <e:nt state="2" ends="" name="identifier"/>
-                      <e:fail state="2" string="("/>
-                    </e:alt>
-                  </e:rule>
-                </e:alt>
-                <e:alt state="2" ends="">
-                  <e:rule state="2" ends="" name="block">
-                    <e:alt state="2">
-                      <e:fail state="2" string="{"/>
-                    </e:alt>
-                  </e:rule>
-                </e:alt>
-              </e:rule>
-              <e:alts state="3 4 5" ends="4">
-                <e:alt state="3" ends="4">
-                  <e:alts state="3">
-                    <e:alt state="3">
-                      <e:fail state="3" string=";"/>
-                    </e:alt>
-                  </e:alts>
-                  <e:alts state="3" ends="4" gid="d2e19">
-                    <e:alt state="3">
-                      <e:empty state="3"/>
-                    </e:alt>
-                    <e:alt state="3" ends="4">
-                      <e:rule state="3" ends="4" name="statement">
-                        <e:alt state="3" ends="">
-                          <e:rule state="3" ends="" name="if-statement">
-                            <e:alt state="3">
-                              <e:fail state="3" string="if"/>
-                            </e:alt>
-                          </e:rule>
-                        </e:alt>
-                        <e:alt state="3" ends="">
-                          <e:rule state="3" ends="" name="while-statement">
-                            <e:alt state="3">
-                              <e:fail state="3" string="while"/>
-                            </e:alt>
-                          </e:rule>
-                        </e:alt>
-                        <e:alt state="3" ends="4">
-                          <e:rule state="3" ends="4" name="assignment">
-                            <e:alt state="3" ends="4">
-                              <e:rule state="3" ends="" name="variable">
-                                <e:alt state="3" ends="">
-                                  <e:rule state="3" ends="" name="identifier">
-                                    <e:alt state="3" ends="">
-                                      <e:nt state="3" ends="" name="letter"/>
-                                      <e:nt state="3" ends="" name="S"/>
-                                    </e:alt>
-                                  </e:rule>
-                                </e:alt>
-                              </e:rule>
-                              <e:literal state="3" ends="4" remaining="0}">=</e:literal>
-                              <e:nt state="4" ends="" name="S"/>
-                              <e:nt state="4" ends="" name="expression"/>
-                            </e:alt>
-                          </e:rule>
-                        </e:alt>
-                        <e:alt state="3" ends="">
-                          <e:rule state="3" ends="" name="call">
-                            <e:alt state="3" ends="">
-                              <e:rule state="3" ends="" name="identifier">
-                                <e:alt state="3" ends="">
-                                  <e:nt state="3" ends="" name="letter"/>
-                                  <e:nt state="3" ends="" name="S"/>
-                                </e:alt>
-                              </e:rule>
-                              <e:fail state="3" string="("/>
-                            </e:alt>
-                          </e:rule>
-                        </e:alt>
-                        <e:alt state="3" ends="">
-                          <e:rule state="3" ends="" name="block">
-                            <e:alt state="3">
-                              <e:fail state="3" string="{"/>
-                            </e:alt>
-                          </e:rule>
-                        </e:alt>
-                      </e:rule>
-                      <e:alts state="4">
-                        <e:alt state="4">
-                          <e:fail state="4" string=";"/>
-                        </e:alt>
-                      </e:alts>
-                      <e:alts state="4" ends="" gid="d2e19">
-                        <e:alt state="4">
-                          <e:empty state="4"/>
-                        </e:alt>
-                        <e:alt state="4" ends="">
-                          <e:rule state="4" ends="" name="statement">
-                            <e:alt state="4" ends="">
-                              <e:rule state="4" ends="" name="if-statement">
-                                <e:alt state="4">
-                                  <e:fail state="4" string="if"/>
-                                </e:alt>
-                              </e:rule>
-                            </e:alt>
-                            <e:alt state="4" ends="">
-                              <e:rule state="4" ends="" name="while-statement">
-                                <e:alt state="4">
-                                  <e:fail state="4" string="while"/>
-                                </e:alt>
-                              </e:rule>
-                            </e:alt>
-                            <e:alt state="4" ends="">
-                              <e:rule state="4" ends="" name="assignment">
-                                <e:alt state="4" ends="">
-                                  <e:rule state="4" ends="" name="variable">
-                                    <e:alt state="4" ends="">
-                                      <e:nt state="4" ends="" name="identifier"/>
-                                    </e:alt>
-                                  </e:rule>
-                                  <e:fail state="4" string="="/>
-                                </e:alt>
-                              </e:rule>
-                            </e:alt>
-                            <e:alt state="4" ends="">
-                              <e:rule state="4" ends="" name="call">
-                                <e:alt state="4" ends="">
-                                  <e:nt state="4" ends="" name="identifier"/>
-                                  <e:fail state="4" string="("/>
-                                </e:alt>
-                              </e:rule>
-                            </e:alt>
-                            <e:alt state="4" ends="">
-                              <e:rule state="4" ends="" name="block">
-                                <e:alt state="4">
-                                  <e:fail state="4" string="{"/>
-                                </e:alt>
-                              </e:rule>
-                            </e:alt>
-                          </e:rule>
-                          <e:alts state="4">
-                            <e:alt state="4">
-                              <e:fail state="4" string=";"/>
-                            </e:alt>
-                          </e:alts>
-                        </e:alt>
-                      </e:alts>
-                    </e:alt>
-                  </e:alts>
-                </e:alt>
-                <e:alt state="4">
-                  <e:alts state="4">
-                    <e:alt state="4">
-                      <e:fail state="4" string=";"/>
-                    </e:alt>
-                  </e:alts>
-                </e:alt>
-                <e:alt state="5" ends="">
-                  <e:alts state="5">
-                    <e:alt state="5">
-                      <e:fail state="5" string=";"/>
-                    </e:alt>
-                  </e:alts>
-                  <e:alts state="5" ends="" gid="d2e19">
-                    <e:alt state="5">
-                      <e:empty state="5"/>
-                    </e:alt>
-                    <e:alt state="5" ends="">
-                      <e:rule state="5" ends="" name="statement">
-                        <e:alt state="5" ends="">
-                          <e:rule state="5" ends="" name="if-statement">
-                            <e:alt state="5">
-                              <e:fail state="5" string="if"/>
-                            </e:alt>
-                          </e:rule>
-                        </e:alt>
-                        <e:alt state="5" ends="">
-                          <e:rule state="5" ends="" name="while-statement">
-                            <e:alt state="5">
-                              <e:fail state="5" string="while"/>
-                            </e:alt>
-                          </e:rule>
-                        </e:alt>
-                        <e:alt state="5" ends="">
-                          <e:rule state="5" ends="" name="assignment">
-                            <e:alt state="5" ends="">
-                              <e:rule state="5" ends="" name="variable">
-                                <e:alt state="5" ends="">
-                                  <e:rule state="5" ends="" name="identifier">
-                                    <e:alt state="5" ends="">
-                                      <e:rule state="5" ends="" mark="-" name="letter">
-                                        <e:alt state="5">
-                                          <e:fail state="5" regex="^([a-z]).*?$"/>
-                                        </e:alt>
-                                        <e:alt state="5">
-                                          <e:fail state="5" regex="^([A-Z]).*?$"/>
-                                        </e:alt>
-                                      </e:rule>
-                                      <e:alts state="5" ends="" gid="d2e196">
-                                        <e:alt state="5">
-                                          <e:empty state="5"/>
-                                        </e:alt>
-                                        <e:alt state="5" ends="">
-                                          <e:nt state="5" ends="" name="letter"/>
-                                        </e:alt>
-                                      </e:alts>
-                                      <e:nt state="5" ends="" name="S"/>
-                                    </e:alt>
-                                  </e:rule>
-                                </e:alt>
-                              </e:rule>
-                              <e:fail state="5" string="="/>
-                            </e:alt>
-                          </e:rule>
-                        </e:alt>
-                        <e:alt state="5" ends="">
-                          <e:rule state="5" ends="" name="call">
-                            <e:alt state="5" ends="">
-                              <e:nt state="5" ends="" name="identifier"/>
-                              <e:fail state="5" string="("/>
-                            </e:alt>
-                          </e:rule>
-                        </e:alt>
-                        <e:alt state="5" ends="">
-                          <e:rule state="5" ends="" name="block">
-                            <e:alt state="5">
-                              <e:fail state="5" string="{"/>
-                            </e:alt>
-                          </e:rule>
-                        </e:alt>
-                      </e:rule>
-                      <e:alts state="5">
-                        <e:alt state="5">
-                          <e:fail state="5" string=";"/>
-                        </e:alt>
-                      </e:alts>
-                    </e:alt>
-                  </e:alts>
-                </e:alt>
-              </e:alts>
-            </e:alt>
-          </e:alts>
-          <e:alts state="3 4 5" ends="0">
-            <e:alt state="3">
-              <e:fail state="3" string="}"/>
-            </e:alt>
-            <e:alt state="4">
-              <e:fail state="4" string="}"/>
-            </e:alt>
-            <e:alt state="5" ends="0">
-              <e:literal state="5" ends="0" remaining="">}</e:literal>
-              <e:rule state="0" ends="" mark="-" name="S">
-                <e:alt state="0">
-                  <e:alts state="0" gid="d2e277">
-                    <e:alt state="0">
-                      <e:empty state="0"/>
-                    </e:alt>
-                    <e:alt state="0">
-                      <e:fail state="0" string=" "/>
-                    </e:alt>
-                  </e:alts>
-                </e:alt>
-              </e:rule>
-            </e:alt>
-          </e:alts>
-        </e:alt>
-      </e:rule>
-    </e:alt>
-  </e:rule>
-</e:parseTree>
+<e:rule xmlns:e="http://schema.expertml.com/EarleyParser" state="1" ends="0" name="program">
+  <e:alt state="1" ends="0">
+    <e:rule state="1" ends="0" name="block">
+      <e:alt state="1" ends="0">
+        <e:literal state="1" ends="2" remaining="a=0}">{</e:literal>
+        <e:rule state="2" ends="" mark="-" name="S">
+          <e:alt state="2">
+            <e:alts state="2" gid="d2e277">
+              <e:alt state="2">
+                <e:empty state="2"/>
+              </e:alt>
+              <e:alt state="2">
+                <e:fail state="2" string=" "/>
+              </e:alt>
+            </e:alts>
+          </e:alt>
+        </e:rule>
+        <e:alts state="2" ends="5" gid="d2e19">
+          <e:alt state="2">
+            <e:empty state="2"/>
+          </e:alt>
+          <e:alt state="2" ends="5">
+            <e:rule state="2" ends="5" name="statement">
+              <e:alt state="2">
+                <e:rule state="2" ends="" name="if-statement">
+                  <e:alt state="2">
+                    <e:fail state="2" string="if"/>
+                  </e:alt>
+                </e:rule>
+              </e:alt>
+              <e:alt state="2">
+                <e:rule state="2" ends="" name="while-statement">
+                  <e:alt state="2">
+                    <e:fail state="2" string="while"/>
+                  </e:alt>
+                </e:rule>
+              </e:alt>
+              <e:alt state="2" ends="5">
+                <e:rule state="2" ends="5" name="assignment">
+                  <e:alt state="2" ends="5">
+                    <e:rule state="2" ends="3" name="variable">
+                      <e:alt state="2" ends="3">
+                        <e:rule state="2" ends="3" name="identifier">
+                          <e:alt state="2" ends="3">
+                            <e:rule state="2" ends="3" mark="-" name="letter">
+                              <e:alt state="2" ends="3">
+                                <e:literal state="2" ends="3" remaining="=0}">a</e:literal>
+                              </e:alt>
+                              <e:alt state="2">
+                                <e:fail state="2" regex="^([A-Z]).*?$"/>
+                              </e:alt>
+                            </e:rule>
+                            <e:alts state="3" ends="" gid="d2e196">
+                              <e:alt state="3">
+                                <e:empty state="3"/>
+                              </e:alt>
+                              <e:alt state="3">
+                                <e:rule state="3" ends="" mark="-" name="letter">
+                                  <e:alt state="3">
+                                    <e:fail state="3" regex="^([a-z]).*?$"/>
+                                  </e:alt>
+                                  <e:alt state="3">
+                                    <e:fail state="3" regex="^([A-Z]).*?$"/>
+                                  </e:alt>
+                                </e:rule>
+                              </e:alt>
+                            </e:alts>
+                            <e:rule state="3" ends="" mark="-" name="S">
+                              <e:alt state="3">
+                                <e:alts state="3" gid="d2e277">
+                                  <e:alt state="3">
+                                    <e:empty state="3"/>
+                                  </e:alt>
+                                  <e:alt state="3">
+                                    <e:fail state="3" string=" "/>
+                                  </e:alt>
+                                </e:alts>
+                              </e:alt>
+                            </e:rule>
+                          </e:alt>
+                        </e:rule>
+                      </e:alt>
+                    </e:rule>
+                    <e:literal state="3" ends="4" remaining="0}">=</e:literal>
+                    <e:rule state="4" ends="" mark="-" name="S">
+                      <e:alt state="4">
+                        <e:alts state="4" gid="d2e277">
+                          <e:alt state="4">
+                            <e:empty state="4"/>
+                          </e:alt>
+                          <e:alt state="4">
+                            <e:fail state="4" string=" "/>
+                          </e:alt>
+                        </e:alts>
+                      </e:alt>
+                    </e:rule>
+                    <e:rule state="4" ends="5" name="expression">
+                      <e:alt state="4">
+                        <e:rule state="4" ends="" name="identifier">
+                          <e:alt state="4">
+                            <e:rule state="4" ends="" mark="-" name="letter">
+                              <e:alt state="4">
+                                <e:fail state="4" regex="^([a-z]).*?$"/>
+                              </e:alt>
+                              <e:alt state="4">
+                                <e:fail state="4" regex="^([A-Z]).*?$"/>
+                              </e:alt>
+                            </e:rule>
+                            <e:alts state="4" gid="d2e196">
+                              <e:alt state="4">
+                                <e:empty state="4"/>
+                              </e:alt>
+                              <e:alt state="4">
+                                <e:fail state="4" nt="letter"/>
+                              </e:alt>
+                            </e:alts>
+                            <e:fail state="4" nt="S"/>
+                          </e:alt>
+                        </e:rule>
+                      </e:alt>
+                      <e:alt state="4" ends="5">
+                        <e:rule state="4" ends="5" name="number">
+                          <e:alt state="4" ends="5">
+                            <e:rule state="4" ends="5" mark="-" name="digit">
+                              <e:alt state="4" ends="5">
+                                <e:literal state="4" ends="5" remaining="}">0</e:literal>
+                              </e:alt>
+                            </e:rule>
+                            <e:alts state="5" ends="" gid="d2e223">
+                              <e:alt state="5">
+                                <e:empty state="5"/>
+                              </e:alt>
+                              <e:alt state="5">
+                                <e:rule state="5" ends="" mark="-" name="digit">
+                                  <e:alt state="5">
+                                    <e:fail state="5" regex="^([0-9]).*?$"/>
+                                  </e:alt>
+                                </e:rule>
+                              </e:alt>
+                            </e:alts>
+                            <e:rule state="5" ends="" mark="-" name="S">
+                              <e:alt state="5">
+                                <e:alts state="5" gid="d2e277">
+                                  <e:alt state="5">
+                                    <e:empty state="5"/>
+                                  </e:alt>
+                                  <e:alt state="5">
+                                    <e:fail state="5" string=" "/>
+                                  </e:alt>
+                                </e:alts>
+                              </e:alt>
+                            </e:rule>
+                          </e:alt>
+                        </e:rule>
+                      </e:alt>
+                    </e:rule>
+                  </e:alt>
+                </e:rule>
+              </e:alt>
+              <e:alt state="2">
+                <e:rule state="2" ends="" name="call">
+                  <e:alt state="2">
+                    <e:nt state="2" ends="3" name="identifier"/>
+                    <e:fail state="3" string="("/>
+                  </e:alt>
+                </e:rule>
+              </e:alt>
+              <e:alt state="2">
+                <e:rule state="2" ends="" name="block">
+                  <e:alt state="2">
+                    <e:fail state="2" string="{"/>
+                  </e:alt>
+                </e:rule>
+              </e:alt>
+            </e:rule>
+            <e:alts state="5">
+              <e:alt state="5">
+                <e:fail state="5" string=";"/>
+              </e:alt>
+            </e:alts>
+            <e:alts state="5" ends="" gid="d2e19">
+              <e:alt state="5">
+                <e:empty state="5"/>
+              </e:alt>
+              <e:alt state="5">
+                <e:rule state="5" ends="" name="statement">
+                  <e:alt state="5">
+                    <e:rule state="5" ends="" name="if-statement">
+                      <e:alt state="5">
+                        <e:fail state="5" string="if"/>
+                      </e:alt>
+                    </e:rule>
+                  </e:alt>
+                  <e:alt state="5">
+                    <e:rule state="5" ends="" name="while-statement">
+                      <e:alt state="5">
+                        <e:fail state="5" string="while"/>
+                      </e:alt>
+                    </e:rule>
+                  </e:alt>
+                  <e:alt state="5">
+                    <e:rule state="5" ends="" name="assignment">
+                      <e:alt state="5">
+                        <e:rule state="5" ends="" name="variable">
+                          <e:alt state="5">
+                            <e:rule state="5" ends="" name="identifier">
+                              <e:alt state="5">
+                                <e:rule state="5" ends="" mark="-" name="letter">
+                                  <e:alt state="5">
+                                    <e:fail state="5" regex="^([a-z]).*?$"/>
+                                  </e:alt>
+                                  <e:alt state="5">
+                                    <e:fail state="5" regex="^([A-Z]).*?$"/>
+                                  </e:alt>
+                                </e:rule>
+                                <e:alts state="5" gid="d2e196">
+                                  <e:alt state="5">
+                                    <e:empty state="5"/>
+                                  </e:alt>
+                                  <e:alt state="5">
+                                    <e:fail state="5" nt="letter"/>
+                                  </e:alt>
+                                </e:alts>
+                                <e:fail state="5" nt="S"/>
+                              </e:alt>
+                            </e:rule>
+                          </e:alt>
+                        </e:rule>
+                        <e:fail state="5" string="="/>
+                      </e:alt>
+                    </e:rule>
+                  </e:alt>
+                  <e:alt state="5">
+                    <e:rule state="5" ends="" name="call">
+                      <e:alt state="5">
+                        <e:fail state="5" nt="identifier"/>
+                      </e:alt>
+                    </e:rule>
+                  </e:alt>
+                  <e:alt state="5">
+                    <e:rule state="5" ends="" name="block">
+                      <e:alt state="5">
+                        <e:fail state="5" string="{"/>
+                      </e:alt>
+                    </e:rule>
+                  </e:alt>
+                </e:rule>
+                <e:alts state="5">
+                  <e:alt state="5">
+                    <e:fail state="5" string=";"/>
+                  </e:alt>
+                </e:alts>
+              </e:alt>
+            </e:alts>
+          </e:alt>
+        </e:alts>
+        <e:literal state="5" ends="0" remaining="">}</e:literal>
+        <e:rule state="0" ends="" mark="-" name="S">
+          <e:alt state="0">
+            <e:alts state="0" gid="d2e277">
+              <e:alt state="0">
+                <e:empty state="0"/>
+              </e:alt>
+              <e:alt state="0">
+                <e:fail state="0" string=" "/>
+              </e:alt>
+            </e:alts>
+          </e:alt>
+        </e:rule>
+      </e:alt>
+    </e:rule>
+  </e:alt>
+</e:rule>

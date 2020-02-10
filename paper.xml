@@ -23,9 +23,7 @@
 			<keyword>Invisible XML</keyword>
 		</keywordset>
 		<abstract>
-			<para>Invisible XML <citation><xref linkend="Pemberton2013"/></citation> is a method for taking any structured
-        text that can be parsed using a grammar, and treating it as XML. It means that the XML
-        technology stack can be leveraged outside of XML structures.</para>
+			<para>Invisible XML <citation><xref linkend="Pemberton2013"/></citation> is a method for taking any structured text that can be parsed using a grammar, and treating it as XML. It allows the XML technology stack to be leveraged outside of XML structures.</para>
 			<para>For Invisible XML to be useful in pure XSLT transforms, a grammar-based parser available in XSLT is required: examples illustrating this are given.  Parser-generators that provide parsers as XSLT are available, but they don't create parsers that work in the XSLT programming idiom, and can't parse ambiguous grammars.</para>
 			<para>An interpretation of the Earley <citation><xref linkend="Earley1970"/></citation> parsing algorithm may solve both of these problems: an Earley parser can parse any context-independent grammar, including any that may be ambiguous; it has also been suggested that the "Earley items" created as part of a parse operation can be reconfigured into a tree structure <citation><xref linkend="Sperberg-McQueen2017"/></citation>, which naturally lends itself to processing with XSLT.</para>
 			<para>This paper aims to lay the ground-work for producing a parser generator that creates XSLT which can parse string inputs given an EBNF-like grammar. Examples from previous papers on the topic will be used to manually create both an XML representation of the grammar, and the desired tree structure of Earley items. In turn, these should inform what an XSLT parser for that grammar should look like.</para>
@@ -44,11 +42,11 @@
       <para>Invisible XML was introduced by Steven Pemberton in his 2013 paper at the Balisage
         conference (<citation><xref linkend="Pemberton2013"/></citation>), and specified online (<citation><xref linkend="ixmlSpec"/></citation>).</para>
       <para>It states that since all data is an abstraction, content can be equivalently expressed in a number of ways, including using XML. A simple piece of pseudo-code like: <example xml:id="input">
-					<title>Proposed input</title>
-					<programlisting>{a=0}</programlisting>
-				</example> can be expressed without losing pertinent information in an XML format such as:</para>
-			<example xml:id="output">
-        <title>Expected Output</title>
+          <title>Proposed input</title>
+          <programlisting>{a=0}</programlisting>
+        </example> can be expressed without losing pertinent information in an XML format such as:</para>
+      <example xml:id="output">
+        <title>Desired Output</title>
         <programlisting language="xml">&lt;program>
    &lt;block>{
       &lt;statement>
@@ -69,12 +67,12 @@
           <citation><xref linkend="Pemberton2016"/></citation></para>
 			<para>Expressing these data in an XML format allows us to use the XML technology stack to process them using tools like XQuery, XSLT, Schematron, and XSpec.  For many who already have existing XML resources and expertise, this not only allows for employee proficiencies and
         reuse of systems, but also works within the declarative idiom.</para>
-      <para>Invisible XML also describes annotations to reduce those elements created in the parse tree that don't add meaning to the content but are an accident of the grammar formulation. Recreating these isn't a primary goal of this paper, but doing so shouldn't present great technical difficulty.</para>
+      <para>Invisible XML also describes annotations to create attributes rather than elements, and to reduce those elements created in the parse tree that don't add meaning to the content but are an accident of the grammar formulation. Recreating these isn't a primary goal of this paper, but doing so shouldn't present great technical difficulty.</para>
     </section>
     <section>
       <title>XSLT based parsers: why we should use them</title>
       <para>There are several features of Invisible XML that offer opportunities to process any data expressed in structured text. These can include documents (like Relax NG Compact, DTDs, XQuery, CSS, MarkDown, YAML, JSON, CSV, etc.), or formats embedded in XML (like path definitions in SVG, XSLT match patterns, or XPath statements).</para>
-      <para>Where these data are already being processed by XSLT - such as exports from content management systems, or rules based validation such as Schematron - it makes sense that an XSLT based parser can be used without introducing any new technology dependencies.</para>
+      <para>Where these data are already being processed by XSLT - such as exports from content management systems, or rules based validation such as Schematron - it makes sense that an XSLT based parser can be used without introducing any new technological dependencies.</para>
 			<para>A useful example would be in rules-based validation; <citation><xref linkend="Kosek2017"/></citation> gives the example of validating SVG paths, which use structured text within  an attribute:</para>
 			<example>
 				<title>An SVG Path <citation><xref linkend="Kosek2017"/></citation></title>
@@ -101,12 +99,12 @@
   &lt;/sch:assert>
 &lt;/sch:rule></programlisting>
 				</example></para>
-			<para>Having the parser available as XSLT therefore empowers developers who use any of the tools in the XSLT toolchain.</para>
-      <para>The other possiblity that an XSLT parser allows is that of an extensible parser: this is discussed in more detail below.</para>
+			<para>Having the parser available as XSLT therefore empowers developers who use any of the tools in the XSLT tool chain.</para>
+      <para>The other possibility that an XSLT parser allows is that of an extensible parser: this is discussed in more detail below.</para>
     </section>
     <section>
       <title>LL1 parsers: why we can't always use them</title>
-      <para>There is a limited availability of XSLT parsers; at the time of writing, there is one well known parser generator which can produce an XSLT parser from EBNF grammars:  <citation><xref linkend="REx"/></citation>.</para>
+      <para>There is a limited availability of XSLT based parsers; at the time of writing, there is one well known parser generator which can produce a parser  in XSLT from EBNF grammars: <citation><xref linkend="REx"/></citation>.</para>
 			<para>Whilst this freely available tool has been invaluable in enabling approaches like the one above, it has a few limitations.  One of these is that the parsers produced by <xref linkend="REx"/> are LL1 or similar based parsers, and can't parse all possible <emphasis>context free grammars</emphasis>.  In particular, they cannot parse <emphasis>ambiguous</emphasis> grammars; those which potentially allow for multiple valid parsed results, or multiple parsing routes resulting in the same results.</para>
 			<para>The example  <xref linkend="grammar"/> chosen for this proof of concept was chosen precisely
         because the grammar chosen won't work with LL parsers <citation><xref linkend="Pemberton2016"/></citation>: the first available symbols in <code>assignment</code> and <code>block</code> are both <code>identifier</code>, and therefore the grammar is ambiguous.  It is perfectly possible in this case to rewrite the grammar so that it's not ambiguous through some clever abstractions, but this means that:<itemizedlist>
@@ -123,18 +121,18 @@
     </section>
     <section>
       <title>The declarative idiom: writing extensible parsers</title>
-      <para>There is another limitation to using the <xref linkend="REx"/>: the parser that it produces is not only an LL1 parser, but one that produces hundreds of state transitions that are designed to be understood by its generated functions, rather than by a human developer.  Because the code that is produced is impenetrable to ordinary humans, it is impossible for a human developer to take it and extend it to deal with extra features, let alone doing so leveraging the inherent approaches and strengths of XSLT.</para>
-			<para>The XSLT idiom involves match templates, "apply template" operations and native sequences. The procedural idom of LL1 parsers involves passing state objects between functions. As well as being hard to understand, the latter  is almost impossible to extend using XSLT's native import and precedence features.</para>
-			<para>Consider a proposed XSLT parser for DTD documents.  The DTD language is hard to process because it mixes a relatively simple EBNF grammar for the syntax with a mechanism for macro substitutions.  It is easy to parse the grammar, but there is no way for EBNF to convey the meaning of entities and their expansions: entities will be treated as just another structure in the parse tree, without parsing any of the data which they represent. Expanding and including the entities would involve recursive operations on the results of each parse.</para>
+      <para>There is another limitation to using the <xref linkend="REx"/>: the parser that it produces is not only an LL1 parser, but one that produces hundreds of state transitions that are designed to be understood by its generated functions, rather than by a human developer. Because the code that is produced is impenetrable to ordinary humans, it is impossible for a human developer to take it and extend it to deal with extra features, let alone doing so applying the inherent approaches and strengths of XSLT.</para>
+			<para>The XSLT idiom involves match templates, "apply template" operations and native sequences. The procedural idiom of LL1 parsers involves passing state objects between functions. As well as being hard to understand, the latter is almost impossible to extend using XSLT's native import and precedence features.</para>
+			<para>Consider a proposed XSLT based parser for DTD documents. The DTD language is hard to process because it mixes a relatively simple EBNF grammar for the syntax with a mechanism for macro substitutions. It is easy to parse the grammar, but there is no way for EBNF to convey the meaning of entities and their expansions: entities will be treated as just another structure in the parse tree, without parsing any of the data which they represent. Expanding and including the entities would involve recursive operations on the results of each parse.</para>
 			<para>Better approaches may involve parsing the entities as they are defined, and including the results in the resulting parse tree; doing so would mean extending the generated parser with some bespoke code.  One of the goals of this paper is to establish whether (or not!) it is possible to write a generated parser that would allow extension using the well established XSLT methods of doing so: over-riding templates in including stylesheets, priorities, and use of instructions like <code>xsl:next-match</code> or <code>xsl:apply-imports</code>.</para>
     </section>
-    <section>
+    <section xml:id="earleyExplained" xreflabel="Section 1.5">
       <title>The Earley Parser (very) briefly explained</title>
-      <para>The Earley parser is known as a chart parser: it works by compiling an intermediate data structure, originally conceived as a chart or set of <emphasis>Earley Items</emphasis>.  Each of these items represents a step in a partial parse, evaluating one rule of the grammar on a defined sub-string.  The real trick of the algorithm is that most of the useless partial parses are avoided altogether.</para>
-      <para>The process of (or function for) creating items is called the <emphasis>recogniser</emphasis>.  This creates an item consisting of the following information fields:</para>
+      <para>The Earley parser is known as a chart parser: it works by compiling an intermediate data structure, originally conceived as a chart or set of <emphasis>Earley Items</emphasis>. Each of these items represents a step in a partial parse, evaluating one rule of the grammar on a defined sub-string. The real trick of the algorithm is that most of the useless partial parses are avoided altogether.</para>
+      <para>The process of (or function for) creating items is called the <emphasis>recogniser</emphasis>. This creates a number of item(s) consisting of the following information fields:</para>
       <itemizedlist>
         <listitem>
-          <para>The current <emphasis>state</emphasis>; the state is a representation of how much of the original string has been parsed (or alternatively, how much of the string remains to be parsed).</para>
+          <para>The current <emphasis>state</emphasis>; the state is a representation of how much of the original string has been parsed (or how much of the string remains to be parsed).</para>
         </listitem>
         <listitem>
           <para>The current <emphasis>rule</emphasis> being evaluated; a rule consists of one <emphasis>symbol</emphasis> on the left hand side, which can be decomposed into a sequence of <emphasis>terminal</emphasis> (literal strings and keywords) and <emphasis>non-terminal</emphasis> symbols; the latter are non-terminal because they refer to other rules, and other sequences of possible symbols.</para>
@@ -143,7 +141,7 @@
           <para>The position within the rule; this is often given as markup in a representation of the rule itself, such as: <equation>
               <mathphrase>block → "{" ◆ statements "}"</mathphrase>
             </equation> where the term before the arrow represents the <inlineequation>
-              <mathphrase><emphasis>symbol</emphasis>, terms to the left of the  ◆</mathphrase>
+              <mathphrase><emphasis>symbol</emphasis>, terms to the left of the ◆</mathphrase>
             </inlineequation> character represent rule definitions which have already been processed, and terms to the right those which have yet to be processed.</para>
         </listitem>
         <listitem>
@@ -157,42 +155,32 @@
         <varlistentry>
           <term>Completion</term>
           <listitem>
-            <para>If there is no next symbol, the rule has been completed!  If there is a parent item, they can be advanced by a symbol and added in the current state.</para>
+            <para>If there is no next symbol, the rule has been completed! If there is a parent item, they can be advanced by a symbol and added in the current state.</para>
           </listitem>
         </varlistentry>
         <varlistentry>
           <term>Prediction</term>
           <listitem>
             <para>If the next symbol is a non-terminal symbol, we review our set of items to see if the non-terminal has already been processed in the current state.</para>
-            <para>If it has, we don't need to add any items by processing it twice: this not only improves efficiency by avoiding replication, but avoids the possibility of infinite recursion.</para>
+            <para>If it has, we don't need to add any items by processing it again: this not only improves efficiency by avoiding repetition/replication, but avoids a possibility of an infinite recursion.</para>
             <para>If the non-terminal has not been processed, we add the corresponding rule to the set, starting at the beginning symbol as may be expected.</para>
           </listitem>
         </varlistentry>
         <varlistentry>
           <term>Scan</term>
           <listitem>
-            <para>If the next symbol is a terminal symbol, we check to see if it matches the corresponding yet-to-be-parsed substring in the input.</para>
+            <para>If the next symbol is a terminal symbol, we check to see if it matches the corresponding yet-to-be-parsed sub-string in the input.</para>
             <para>When a match is achieved, we can advance to the next symbol, as well as advancing the current state.</para>
             <para>When a match is not achieved, the rule has failed, and no further items are created from the current rule.</para>
           </listitem>
         </varlistentry>
       </variablelist>
-      <para>In this way, Earley items are added to the set until there are no more symbols left to
-        resolve, or until there are no more items to add in the <emphasis>final state</emphasis>
-        (i.e. the state representing the end of the parsed string).  If there exists an item in this
-        final state that started in the initial state, we know that we have found a valid
-        parse.</para>
-      <para>Creating a the parse tree can then be achieved simply by following the trail of items
-        from this final item to the first, discarding any which are incorrect, incomplete or which
-        do not contribute.  Terminals form the leaf nodes, and Non-terminals the containing branch
-        nodes.</para>
+      <para>In this way, Earley items are added to the set until there are no more symbols left to resolve, or until there are no more items to add in the <emphasis>final state</emphasis> (i.e. the state representing the end of the parsed string). If there exists an item in this final state that is complete and started in the initial state, we know that we have found a valid parse.</para>
+      <para>Creating the parse tree can then be achieved simply by following the trail of items from this final item to the first, discarding any which are incorrect, incomplete or which do not contribute. Terminals form the leaf nodes, and Non-terminals the containing branch nodes.</para>
     </section>
     <section>
       <title>Macro Substitution</title>
-      <para>There is another desirable property that would be useful in an extensible parser: the
-        ability to handle macro substitution (such as DTD entity resolution) as part of the parse.
-        While the implementation of such a feature is not the goal of this paper, it was hoped that
-        the implementation would at least allow for this in the future.</para>
+      <para>There is another desirable property that would be useful in an extensible parser: the ability to handle macro substitution (such as DTD entity resolution) as part of the parse. While the implementation of such a feature is not the goal of this paper, establishing the possibility is.</para>
       <para>It is perhaps not immediately apparent whether or not this is even possible: the effect
         is that the string to parse will be altered by the act of parsing itself.</para>
       <para>The concept of the state of the parse in the Earley algorithm is often defined using
@@ -206,6 +194,8 @@
   </section>
 	<section>
 		<title>Methodology</title>
+    <para>The essential approach is to take a grammar expressed in an XML syntax, and a string to parse.  The parser works by transforming the grammar with the string as a parameter.</para>
+    <para>The proof of concept parser is available to view on github at <link xl:href="https://github.com/eXpertML/XMLPrague2020/blob/master/Parser/EarleyParser.xsl"/>.  This paper will restrict itself to discussing some of the more pertinent design choices.</para>
     <section>
       <title>Choosing a grammar language</title>
       <para>There are a number of grammar languages in widespread use, many based on the
@@ -219,13 +209,10 @@
             to write than standard BNF.</para>
         </listitem>
         <listitem>
-          <para>It has an XML representation (see <xref endterm="ixmlSpec"/>), which makes it
-            perfect for use with XSLT without having to bootstrap with another parser.</para>
+          <para>It has an XML representation (see <xref linkend="ixmlSpec"/>), which makes it perfect for use with XSLT without having to bootstrap with another parser.</para>
         </listitem>
         <listitem>
-          <para>It includes options which define how the XML representation - which symbols
-            represent elements, which attributes, and which can be omitted from the result tree
-            altogether.</para>
+          <para>It includes options which define the XML representation - which symbols represent elements, which attributes, and which can be omitted from the result tree altogether.</para>
         </listitem>
       </itemizedlist>
       <para>The last point alone makes Invisible XML uniquely suitable for the task.</para>
@@ -235,20 +222,271 @@
     </section>
     <section>
       <title>Determine the Earley objects</title>
+      <para>Creating a sequence of Earley items was not strictly necessary, but was certainly helpful in understanding the Earley algorithm, and the resulting Earley trees.</para>
+      <para>A partial set of Earley items illustrating the complete parse is included in the appendix of this paper under the <xref linkend="earleyItems"/>.</para>
     </section>
     <section>
-      <title>Determine the Earley Tree</title>
+      <title>The Earley Tree</title>
+      <para>Defining the Earley Tree transpired to be a more interactive process than was initially envisioned, as it became apparent which information was necessary to the XSLT parsing algorithm, and how that was best represented.  However, the basic principle remained the same: terminal symbols become text nodes; the non-terminal symbol on the left hand side of a grammar rule becomes a containing element; the right hand side becomes a sequence of contained nodes.</para>
+      <para>Since Invisible XML grammars will result in arbitrary element names, a namespace was chosen for most nodes in the intermediary Earley tree: <code>xmlns:e="http://schema.expertml.com/EarleyParser"</code>.</para>
+      <para>Invisible XML defines the starting rule as the first in the grammar <xref linkend="ixmlSpec"/>; this ensures that the entire Earley Tree is contained in a single root element, thus obeying XML well formed-ness.</para>
+      <para>Originally, elements in the Earley Tree were envisioned to be the final elements that would be returned at the end of the parse; ultimately, however, it became apparent that writing templates to convert the Earley Tree to successful parse results would be easier to match a single element, <code>e:rule</code>.</para>
+      <para>Attributes are used to store useful information during the parse: <code>@state</code> and <code>@ends</code> are both space separated list of states where the evaluation of the rule in question can be said to begin and finish, respectively.  The XML serialisations are also preserved in an optional <code>@mark</code>.  The creation and use of these attributes will be examined in more detail later in the paper.</para>
+      <para>Since it is a truism that the first rule will never have already been matched in the initial state, we can create the root element of our Earley Tree:</para>
+      <informalexample>
+        <programlisting language="xml">&lt;e:rule name="program" state="1" ends="0" >...&lt;/e:rule></programlisting>
+      </informalexample>
+      <para>A rule in the Invisible XML Grammar can contain a number of alternative formulations. For these we recycle the elements <code>alts</code> and <code>alt</code> as <code>e:alts</code> and <code>e:alt</code>, respectively. Note that <code>e:alt</code> can only ever have other <code>e:alt</code> elements as siblings; the containing <code>e:alts</code> element is used to enable this restriction where alternatives are required within the rule definitions.  The same structures can be used to capture state ambiguities, i.e. when it there is more than one viable starting state resulting from the preceding parse operations:<informalexample>
+          <programlisting language="xml">&lt;e:alts state="3 4 5" ends="0">
+  &lt;e:alt state="3">
+     &lt;e:fail state="3" string="}"/>
+  &lt;/e:alt>
+  &lt;e:alt state="4">
+     &lt;e:fail state="4" string="}"/>
+  &lt;/e:alt>
+  &lt;e:alt state="5>...&lt;/e:alt>
+&lt;/e:alts></programlisting>
+        </informalexample></para>
+      <para>Where a specific <code>e:alts</code> element needs to be referred to (we'll see why later), it can be given a generated id stored in the <code>@gid</code> element.</para>
+      <para>Optional elements are handled as an alternative using an <code>e:empty</code> element; this is a leaf node of the Earley Tree (i.e. an element which is empty):</para>
+      <informalexample>
+        <programlisting>&lt;e:empty state="2"/></programlisting>
+      </informalexample>
+      <para>Terminal symbols that successfully match are captured in an <code>e:literal</code> element; this allows for parse metadata to be captured in the same attributes as for the non-terminals in <code>e:rule</code>, and also has the benefit of avoiding the need for mixed text processing. An attribute <code>@remaining</code> is also used in the current implementation, which stores the new unparsed string that results after the terminal symbol has been matched:</para>
+      <informalexample>
+        <programlisting>&lt;e:literal state="1" ends="2" remaining="a=0}">{&lt;/e:literal></programlisting>
+      </informalexample>
+      <para>Terminal symbols that do not successfully match return the <code>e:fail</code> element; these currently include diagnostic attributes <code>@string</code> and <code>@regex</code> to show the failed match:</para>
+      <informalexample>
+        <programlisting>&lt;e:fail state="3" string="("/>
+&lt;e:fail state="5" regex="^([0-9]).*?$"/></programlisting>
+      </informalexample>
+      <para>These should be the last sibling children of their parents, as processing should not continue after a failure.</para>
+      <para>Non terminals are checked to see whether they have already been evaluated in the current state. If they have not, a new <code>e:rule</code> element is created. If they have, and that evaluation ended in a failure, then an <code>e:fail</code> element is created. If the rule has already been evaluated, a place-holder reference is created, detailing all possible end states:<informalexample>
+          <programlisting>&lt;e:nt state="2" ends="3" name="identifier"/></programlisting>
+        </informalexample></para>
     </section>
     <section>
-      <title>The XSLT algorithm</title>
+      <title>State references</title>
+      <para>All possible states are stored as a sequence of strings: states are then referred by the integer corresponding to their index in that sequence.  The first string in the sequence is always the initial complete string; a subsequent state corresponding to the string <code>$required</code> can then be added simply whilst avoiding duplicates:</para>
+      <informalexample>
+        <programlisting>($states, $remaining[not($remaining = $states)])</programlisting>
+      </informalexample>
+      <para>Similarly, the state reference number can be retrieved using:<informalexample>
+          <programlisting>index-of($states, $remaining)</programlisting>
+        </informalexample></para>
+      <para>There is one special case: the state corresponding to the empty string, which represents a complete parse of the entire input string: this is represented by the pseudo-index 0.</para>
+      <note>
+        <para>Although this will normally be the case, there is no requirement that the state resulting from matching a terminal or non-terminal be a substring of the previous state: this allows for the possibility of parsing macro/entity substitution at a later date.</para>
+      </note>
+    </section>
+    <section>
+      <title>Tracking Visited Nonterminals</title>
+      <para>As has been discussed in <xref linkend="earleyExplained"/>, it is essential to differentiate between non-terminals which have already been visited in the current state, and those which have not.</para>
+      <para>When we find a non-terminal that has already been visited, it is also convenient to know the corresponding end states that will result from that segment of the parse.</para>
+      <para>To do this, we require another data structure, indexed by both non-terminal and by state number. This is implemented using XSLT 3.0 maps and stored as the tunnel parameter <code>$visited</code>:</para>
+      <informalexample>
+        <programlisting language="javascript">{
+  "program": {
+    "1":""
+  },
+  "letter": {
+    "2":"3",
+    "3":""
+  },
+  "identifier": {
+    "2":""
+  },
+  "block": {
+    "1":""
+  }
+  ...
+}</programlisting>
+      </informalexample>
+      <para>The structure is a map of maps indexed by either nonterminal name or generated id (the latter being used in the case of <code>e:alts</code>).  The keys of the interior maps correspond to the states where the nonterminals have been matched, and their values (if present) to the possible end states should those nonterminals complete.</para>
+      <para>These maps can be conveniently serialized (e.g. to JSON<footnote>
+          <para>Other serialisation options are available, and - with a good Invisible XML parser - can be treated as XML! :)</para>
+        </footnote>) for debugging purposes.</para>
+    </section>
+    <section>
+      <title>Controlling the Process order</title>
+      <para>By now one of the primary challenges of creating the Earley Tree should be apparent: each node that is created depends on the data structures for the states and visited non-terminals that are calculated from the preceding node.  Applying templates passes information from parents to children, not from preceding to following node.</para>
+      <para>Circumventing this default behaviour requires a replacement mechanism for <code>xsl:apply-templates</code>; using a named template seems the obvious choice, since it allows us to preserve the context: <code>e:process-children</code>.  We'll also need to define the <code>$children</code> of the template as a parameter, defaulting to the children nodes of the context element.</para>
+      <para>We can now apply templates to the first sibling child of <code>$children</code>, storing it in a variable <code>$first</code> and then returning it as the first result of the sequence.  If <code>$first</code> returns <code>e:fail</code>, or if there are no subsequent nodes in <code>$children</code>, then we can stop processing.  Otherwise, new state and visited parameters can be calculated and passed as the children nodes to a new instance of the template, until the last of the original sibling nodes has been processed.</para>
+    </section>
+    <section>
+      <title>Dealing with Repetition: <code>repeat0</code></title>
+      <para>Optionally repeating elements can be handled by simply re-writing them as a choice, much as suggested in the <xref linkend="ixmlSpec"/>:</para>
+      <para>
+        <informalexample>
+          <programlisting language="xml">&lt;xsl:variable name="GID" select="(@gid, generate-id(.))[1]"/>
+&lt;xsl:variable name="equivalent" as="element(alts)">
+  &lt;alts gid="{$GID}">
+    &lt;alt>
+      &lt;empty/>
+    &lt;/alt>
+    &lt;alt>
+      &lt;xsl:sequence select="(child::*[not(self::sep)], sep)"/>
+      &lt;xsl:copy>
+        &lt;xsl:attribute name="gid" select="$GID"/>
+        &lt;xsl:copy-of select="@*, node()"/>
+      &lt;/xsl:copy>
+    &lt;/alt>
+  &lt;/alts>
+&lt;/xsl:variable></programlisting>
+        </informalexample>
+      </para>
+      <para>It might seem that a redefinition which contains itself like this would cause infinite recursion; however, recall that we can use generated IDs in the <code>$visited</code> parameter.  By using the same check that we do for non-terminals, we can ensure that the interior <code>repeat0</code> is only run in the case where the state has changed; i.e. we only repeat processing if there is a match in the initial sequence.</para>
+    </section>
+    <section>
+      <title>Dealing with Repetition: <code>repeat1</code></title>
+      <para>Now that we have a definition for an optionally repeating element, we can use it for a similar re-write for <code>repeat1</code>:</para>
+      <informalexample>
+        <programlisting>&lt;xsl:variable name="equivalent" as="element()*">
+  &lt;xsl:sequence select="(child::*[not(self::sep)], sep)"/>
+  &lt;repeat0 gid="{generate-id(.)}">
+    &lt;xsl:sequence select="*"/>
+  &lt;/repeat0>
+&lt;/xsl:variable></programlisting>
+      </informalexample>
+    </section>
+    <section>
+      <title>Pruning the Earley Tree</title>
+      <para>Converting the Earley Tree into one (or more) parsed result trees is now relatively straightforward; any element in the Earley Tree with a zero-length value of <code>@ends</code> (or where the element is missing entirely), or which contain <code>e:fail</code> can be suppressed.  Other elements are processed as follows:</para>
+      <variablelist>
+        <varlistentry>
+          <term><code>e:rule[not(@mark)]</code></term>
+          <listitem>
+            <para>Each rule is replaced with the name of the symbol.  Alternative children are processed as for <code>e:alts</code>.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><code>e:rule[@mark eq '-']</code></term>
+          <listitem>
+            <para>The containing element is skipped.  Alternative children are processed as for <code>e:alts</code>.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><code>e:alts</code></term>
+          <listitem>
+            <para>Templates are applied for each of the children alternatives, but only the children of the first are returned.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><code>e:alt[not(e:fail)]</code></term>
+          <listitem>
+            <para>Templates are applied to the children elements; if no elements are returned, nor is the containing <code>e:alt</code>.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><code>e:nt</code></term>
+          <listitem>
+            <para>References to non-terminals in a given state are replaced with the results of pruning the corresponding <code>e:rule</code> in the Earley Tree</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      <variablelist>
+        <varlistentry>
+          <term><code>e:literal</code></term>
+          <listitem>
+            <para>Literal strings are replaced with their string values.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      <para>For this proof of concept, it is enough to return the first viable result.  However it should be possible to return a sequence of valid results for ambiguous grammars, should this be desirable.</para>
+      <para>Similarly, in the event of no complete parse, it should be possible to either return an error, or a partial parse.  This proof of concept does the latter.</para>
+    </section>
+    <section>
+      <title>Results</title>
+      <para>The parser is largely successful, being able to parse the specified string in the chosen grammar:</para>
+      <example>
+        <title>Results of parsing <code>{a=0}</code></title>
+        <programlisting language="xml">&lt;program>
+  &lt;block xmlns:e="http://schema.expertml.com/EarleyParser">{
+    &lt;statement>
+      &lt;assignment>
+        &lt;variable>
+          &lt;identifier>a&lt;/identifier>
+        &lt;/variable>=&lt;expression>
+          &lt;number>0&lt;/number>
+        &lt;/expression>
+      &lt;/assignment>
+    &lt;/statement>
+    }&lt;/block>
+&lt;/program></programlisting>
+      </example>
+      <para>Compared to the desired output, there remains only an extraneous namespace node on <code>/program/block</code> which should be possible to remove given a little more work. </para>
+      <para>In fact, it is possible to parse other strings in the grammar:</para>
+      <example>
+        <title>Results of parsing <code>{while a do b=5}</code></title>
+        <programlisting language="xml">&lt;program>
+  &lt;block xmlns:e="http://schema.expertml.com/EarleyParser">{ 
+    &lt;statement>
+      &lt;while-statement>while 
+        &lt;condition>
+          &lt;identifier>a&lt;/identifier>
+        &lt;/condition>do
+        &lt;statement>
+          &lt;assignment>
+            &lt;variable>
+              &lt;identifier>b&lt;/identifier>
+            &lt;/variable>=
+            &lt;expression>
+              &lt;number>5&lt;/number>
+            &lt;/expression>
+          &lt;/assignment>
+        &lt;/statement>
+      &lt;/while-statement>
+    &lt;/statement>
+    }&lt;/block>
+&lt;/program></programlisting>
+      </example>
     </section>
 	</section>
 	<section>
 		<title>Conclusions</title>
+    <section>
+      <title>Proof of Concept</title>
+      <para>The parser works for certain strings, and proves the concept of an XSLT based Invisible XML parser.</para>
+      <para>It is not a complete Invisible XML implementation: some XML serialization options are not fully implemented, and therefore does not yet work for the general case of either the input string or the grammar.</para>
+    </section>
+    <section>
+      <title>Earley enough?</title>
+      <para>The algorithm used by the parser is inspired by the Earley parser, but it has not been shown to be equivalent.</para>
+      <para>Functions to calculate the state sequence or map of visited nonterminals mean that elements in the grammar are processed multiple times; it is not immediately clear how and to what degree this may affect performance.  Other options include embedding this information in the Earley Tree itself, resulting in an intermediate data structure many times larger than the desired result.</para>
+    </section>
+    <section>
+      <title>Extensible Parsing</title>
+      <para>The use of the state sequence means that it ought to be possible to write parser extentions that change the input string as it is parsed, allowing for entity and macro expanding parsers.</para>
+    </section>
+    <section>
+      <title>No Need for Parser Generators</title>
+      <para>Since the grammar is passed in as an argument to the parsing function, and used as an input to an xslt transformation mode, there is no inherent dependency on, nor a need to generate a particular parser for any given grammar.</para>
+    </section>
 	</section>
 	<section>
-		<title>Future Work</title>
-	</section>
+    <title>Future Work</title>
+    <section>
+      <title>Full Invisible XML Implementation</title>
+      <para>The first and most obvious opporunity for future work is to complete the implementation of Invisible XML. This should not be an onerous task, as the list of remaining features to implement is small and consists mainly of serialisation options.</para>
+    </section>
+    <section>
+      <title>Parsing other Grammar Languages</title>
+      <para>Once Invisible XML as XML is fully implemented using the non-xml form becomes trivial: simply parse the grammar using the XML grammar definition.</para>
+      <para>This ability of the grammar to produce one representation of itself from another is also a great test of a complete implementation.</para>
+      <para>It is equally trivial to produce an Invisible XML grammar equivalent from any other grammar language: all that is required is an Invisible XML grammar representation of the other grammar.  In this way it should be possible to extend the parser to support parsing with EBNF and BNF grammars, such as those found in W3C specifications. </para>
+    </section>
+    <section>
+      <title>Quality and Performance Improvements</title>
+      <para>Automated testing can be implemented in a straightforward way using a testing framework like <xref linkend="XSpec"/>.</para>
+      <para>Viability for scaled applications, and confirmation of performance scaling will require some performance testing with a range of input strings and grammars.  Performance testing should also show whether performance scales proportionately to equivalent Earley parsers for the same grammar types.  </para>
+    </section>
+	  <section>
+      <title>Ambiguous Parses</title>
+      <para>Currently the pruning operation on the Earley tree returns the first valid parse; it should be possible to optionally return multiple parses for ambiguous grammars.</para>
+      <para>It might also be possible to extend the parser to try multiple grammars for ambiguous strings, allowing for general strings to be parsed according to the first preferred grammar in a list.</para>
+    </section>
+  </section>
 
 	<bibliography xml:id="references">
 
@@ -266,6 +504,8 @@
     <bibliomixed xml:id="ixmlSpec" xreflabel="Invisible XML Specification">Pemberton, Steven (2019) <title>Invisible XML Specification (Draft)</title>, retrieved from the web on 2019-12-10  <link xlink:href="https://homepages.cwi.nl/~steven/ixml/ixml-specification.html" xlink:type="simple" xlink:show="new" xlink:actuate="onRequest"/></bibliomixed>
 		
 		<bibliomixed xml:id="REx" xreflabel="REx Parser Generator">Gunther Rademacher (2019) <title>REx Parser Generator</title>, retrieved from the web on 2019-12-10 <link xlink:href="https://www.bottlecaps.de/rex/" xlink:type="simple" xlink:show="new" xlink:actuate="onRequest"/></bibliomixed>
+	  <bibliomixed xml:id="XSpec" xreflabel="XSpec">
+      <title>XSpec</title>, retrieved from the web on 2020-02-10 <link xlink:href="https://github.com/xspec/xspec" xlink:type="simple" xlink:show="new" xlink:actuate="onRequest"/></bibliomixed>
 		
 	</bibliography>
 	
@@ -293,197 +533,11 @@ condition: identifier.
 		</example>
 		<example xml:id="xmlgrammar">
 			<title xml:id="program.ixml">Grammar (iXML as XML format)</title>
-			<programlisting>&lt;ixml>
-   &lt;rule name='program'>:
-      &lt;alt>
-         &lt;nonterminal name='block'/>
-      &lt;/alt>.
-   &lt;/rule>
-   &lt;rule name='block'>:
-      &lt;alt>
-         &lt;literal dstring='{'/>,
-         &lt;nonterminal name='S'/>,
-         &lt;repeat0>
-            &lt;nonterminal name='statement'/>*
-            &lt;sep>(
-               &lt;alts>
-                  &lt;alt>
-                     &lt;literal dstring=';'/>,
-                     &lt;nonterminal name='S'/>
-                  &lt;/alt>
-               &lt;/alts>)
-            &lt;/sep>
-         &lt;/repeat0>,
-         &lt;literal dstring='}'/>,
-         &lt;nonterminal name='S'/>
-      &lt;/alt>.
-   &lt;/rule>
-   &lt;rule name='statement'>:
-      &lt;alt>
-         &lt;nonterminal name='if-statement'/>
-      &lt;/alt>;
-      &lt;alt>
-         &lt;nonterminal name='while-statement'/>
-      &lt;/alt>;
-      &lt;alt>
-         &lt;nonterminal name='assignment'/>
-      &lt;/alt>;
-      &lt;alt>
-         &lt;nonterminal name='call'/>
-      &lt;/alt>;
-      &lt;alt>
-         &lt;nonterminal name='block'/>
-      &lt;/alt>.
-   &lt;/rule>
-   &lt;rule name='if-statement'>:
-      &lt;alt>
-         &lt;literal dstring='if'/>,
-         &lt;nonterminal name='S'/>,
-         &lt;nonterminal name='condition'/>,
-         &lt;literal dstring='then'/>,
-         &lt;nonterminal name='S'/>,
-         &lt;nonterminal name='statement'/>,
-         &lt;option>
-            &lt;nonterminal name='else-part'/>?&lt;/option>
-      &lt;/alt>.
-   &lt;/rule>
-   &lt;rule name='else-part'>:
-      &lt;alt>
-         &lt;literal dstring='else'/>,
-         &lt;nonterminal name='S'/>,
-         &lt;nonterminal name='statement'/>
-      &lt;/alt>.
-   &lt;/rule>
-   &lt;rule name='while-statement'>:
-      &lt;alt>
-         &lt;literal dstring='while'/>,
-         &lt;nonterminal name='S'/>,
-         &lt;nonterminal name='condition'/>,
-         &lt;literal dstring='do'/>,
-         &lt;nonterminal name='S'/>,
-         &lt;nonterminal name='statement'/>
-      &lt;/alt>.
-   &lt;/rule>
-   &lt;rule name='assignment'>:
-      &lt;alt>
-         &lt;nonterminal name='variable'/>,
-         &lt;literal dstring='='/>,
-         &lt;nonterminal name='S'/>,
-         &lt;nonterminal name='expression'/>
-      &lt;/alt>.
-   &lt;/rule>
-   &lt;rule name='variable'>:
-      &lt;alt>
-         &lt;nonterminal name='identifier'/>
-      &lt;/alt>.
-   &lt;/rule>
-   &lt;rule name='call'>:
-      &lt;alt>
-         &lt;nonterminal name='identifier'/>,
-         &lt;literal dstring='('/>,
-         &lt;nonterminal name='S'/>,
-         &lt;repeat0>
-            &lt;nonterminal name='parameter'/>*
-            &lt;sep>(
-               &lt;alts>
-                  &lt;alt>
-                     &lt;literal dstring=','/>,
-                     &lt;nonterminal name='S'/>
-                  &lt;/alt>
-               &lt;/alts>)
-            &lt;/sep>
-         &lt;/repeat0>,
-         &lt;literal dstring=')'/>,
-         &lt;nonterminal name='S'/>
-      &lt;/alt>.
-   &lt;/rule>
-   &lt;rule name='parameter'>:
-      &lt;alt>
-         &lt;nonterminal mark='-' name='expression'/>
-      &lt;/alt>.&lt;/rule>
-   &lt;rule name='identifier'>:
-      &lt;alt>
-         &lt;repeat1>
-            &lt;nonterminal name='letter'/>+
-         &lt;/repeat1>,
-         &lt;nonterminal name='S'/>
-      &lt;/alt>.
-   &lt;/rule>
-   &lt;rule name='expression'>:
-      &lt;alt>
-         &lt;nonterminal name='identifier'/>
-      &lt;/alt>;
-      &lt;alt>
-         &lt;nonterminal name='number'/>
-      &lt;/alt>.
-   &lt;/rule>
-   &lt;rule name='number'>:
-      &lt;alt>
-         &lt;repeat1>
-            &lt;nonterminal name='digit'/>+
-         &lt;/repeat1>,
-         &lt;nonterminal name='S'/>
-      &lt;/alt>.
-   &lt;/rule>
-   &lt;rule mark='-' name='letter'>:
-      &lt;alt>
-         &lt;inclusion>[
-            &lt;range from='a' to='z'>-&lt;/range>]
-         &lt;/inclusion>
-      &lt;/alt>;
-      &lt;alt>
-         &lt;inclusion>[
-            &lt;range from='A' to='Z'>-&lt;/range>]
-         &lt;/inclusion>
-      &lt;/alt>.
-   &lt;/rule>
-   &lt;rule mark='-' name='digit'>:
-      &lt;alt>
-         &lt;inclusion>[
-            &lt;range from='0' to='9'>-&lt;/range>]
-         &lt;/inclusion>
-      &lt;/alt>.
-   &lt;/rule>
-   &lt;rule name='condition'>:
-      &lt;alt>
-         &lt;nonterminal name='identifier'/>
-      &lt;/alt>.
-   &lt;/rule>
-   &lt;rule mark='-' name='S'>:
-      &lt;alt>
-         &lt;repeat0>
-            &lt;literal dstring=' '/>*
-         &lt;/repeat0>
-      &lt;/alt>.
-   &lt;/rule>
-&lt;/ixml></programlisting>
-		</example>
-		<example xml:id="output">
-			<title>Desired Output</title>
-			<programlisting>&lt;program>
-   &lt;block>{
-      &lt;statements>
-         &lt;statement>
-            &lt;assignment>
-               &lt;variable>
-                  &lt;identifier>a&lt;/identifier>
-               &lt;/variable>
-               =
-               &lt;expression>
-                  &lt;number>0&lt;/number>
-               &lt;/expression>
-            &lt;/assignment>
-         &lt;/statement>;
-         &lt;statements>
-            &lt;empty>&lt;/empty>
-         &lt;/statements>
-      &lt;/statements>
-   }&lt;/block>
-&lt;/program></programlisting>
+      <para>The grammar is available in XML format at <link xl:href="https://github.com/eXpertML/XMLPrague2020/blob/master/Parser/Program.ixml"/></para>
 		</example>
 	  
-    <table xml:id="earleyItems" frame="void">
-      <caption xml:id="eItems">Earley Items for <code>{a=0}</code></caption>
+    <table xml:id="earleyItems" frame="void" xreflabel="Table of Earley Items">
+      <caption>Earley Items for <code>{a=0}</code></caption>
       <colgroup>
         <col title="ItemNum" width="5%"/>
         <col title="Symbol" width="10%" align="right"/>
@@ -557,21 +611,24 @@ condition: identifier.
           <td>statement</td>
           <td>→ ◆ if_statement</td>
           <td>1</td>
-          <td><emphasis role="italic">predicts</emphasis> <emphasis role="bold">if_statement</emphasis></td>
+          <td><emphasis role="italic">predicts</emphasis>
+            <emphasis role="bold">if_statement</emphasis></td>
         </tr>
         <tr>
           <td>9</td>
           <td>statement</td>
           <td>→ ◆ assignment</td>
           <td>1</td>
-          <td><emphasis role="italic">predicts</emphasis> <emphasis role="bold">assignment</emphasis></td>
+          <td><emphasis role="italic">predicts</emphasis>
+            <emphasis role="bold">assignment</emphasis></td>
         </tr>
         <tr>
           <td>10</td>
           <td>statement</td>
           <td>→ ◆ call</td>
           <td>1</td>
-          <td><emphasis role="italic">predicts</emphasis> <emphasis role="bold">call</emphasis></td>
+          <td><emphasis role="italic">predicts</emphasis>
+            <emphasis role="bold">call</emphasis></td>
         </tr>
         <tr>
           <td>12</td>
@@ -599,21 +656,24 @@ condition: identifier.
           <td>assignment</td>
           <td>→ ◆ variable "=" expression</td>
           <td>1</td>
-          <td><emphasis role="italic">predicts </emphasis> <emphasis role="bold">variable</emphasis></td>
+          <td><emphasis role="italic">predicts </emphasis>
+            <emphasis role="bold">variable</emphasis></td>
         </tr>
         <tr>
           <td>17</td>
           <td>call</td>
           <td>→ ◆ identifier "(" parameters ")"</td>
           <td>1</td>
-          <td><emphasis role="italic">predicts</emphasis> <emphasis role="bold">identifier</emphasis></td>
+          <td><emphasis role="italic">predicts</emphasis>
+            <emphasis role="bold">identifier</emphasis></td>
         </tr>
         <tr>
           <td>19</td>
           <td>variable</td>
           <td>→ ◆ identifier</td>
           <td>1</td>
-          <td><emphasis role="italic">predicts</emphasis> <emphasis role="bold">identifier</emphasis> - note that this is the same <emphasis role="italic">prediction</emphasis> that results from #17, so we don't need to run this twice...</td>
+          <td><emphasis role="italic">predicts</emphasis>
+            <emphasis role="bold">identifier</emphasis> - note that this is the same <emphasis role="italic">prediction</emphasis> that results from #17, so we don't need to run this twice...</td>
         </tr>
         <tr>
           <td>20</td>
@@ -699,7 +759,8 @@ condition: identifier.
           <td>number</td>
           <td>→ [0-9] ◆ number</td>
           <td>3</td>
-          <td><emphasis role="italic">predicts</emphasis> <emphasis role="bold">number</emphasis> (#32 and #33)</td>
+          <td><emphasis role="italic">predicts</emphasis>
+            <emphasis role="bold">number</emphasis> (#32 and #33)</td>
         </tr>
         <tr>
           <td>31</td>
